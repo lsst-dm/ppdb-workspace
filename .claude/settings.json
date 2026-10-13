@@ -25,10 +25,19 @@
       "Bash(gh pr list:*)",
       "Bash(gh pr checks:*)",
       "Bash(gh run view:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr status:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git -C * push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr ready:*)",
+      "Bash(gh api:*)"
     ],
     "deny": [
-      "Bash(git push:*)",
+      "Bash(gh pr merge:*)",
       "Bash(terraform apply:*)",
       "Bash(terraform destroy:*)",
       "Bash(terraform import:*)",

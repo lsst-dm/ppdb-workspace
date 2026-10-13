@@ -39,6 +39,7 @@ ppdb-workspace/
 ├── docs/
 │   ├── architecture.md       # system overview across all repos
 │   ├── glossary.md           # PPDB terms
+│   ├── workflow-tickets.md   # ticket lifecycle with Claude
 │   └── components/           # detailed reference, one file per submodule
 ├── notes/
 │   └── tickets/              # one directory per Jira ticket
@@ -58,11 +59,12 @@ ppdb-workspace/
 | `CLAUDE.local.md` | Whatever you want: personal preferences, local paths | Personal Claude context that isn't shared. Gitignored |
 | `ppdb.code-workspace` | Workspace root plus each submodule as a folder | Open in VS Code for a multi-root view |
 | `.gitmodules` | URL and branch (`main`) for each submodule; `idf_deploy` and `phalanx` are shallow | Defines what `repos/` contains |
-| `.claude/settings.json` | `permissions.allow`: read-only commands Claude may run without asking. `permissions.deny`: commands Claude may never run (push, `terraform apply`, GCP deploys and deletes, `kubectl apply/delete`). `hooks`: registers the session-start hook | Guardrails and fewer permission prompts. Commands on neither list prompt you |
+| `.claude/settings.json` | `permissions.allow`: read-only commands Claude may run without asking. `permissions.ask`: commands that always prompt you (`git push`, `gh pr create`, `gh pr ready`, `gh api`). `permissions.deny`: commands Claude may never run (`gh pr merge`, `terraform apply`, GCP deploys and deletes, `kubectl apply/delete`). `hooks`: registers the session-start hook | Guardrails and fewer permission prompts. Commands on no list also prompt you |
 | `.claude/hooks/session-start.sh` | Bash script that checks `gcloud config get-value project` and runs `git status` in each submodule | Warns you if the active project isn't `ppdb-dev-5c07`, and gives Claude the current branch and dirty state of each repo |
 | `.claude/rules/*.md` | Layout, build and test commands, deploy behavior, and gotchas for one component. Each has a `paths:` header such as `repos/dax_ppdb/**` | Claude loads a rule file only when working on files under its path, so component detail doesn't crowd every session |
 | `docs/architecture.md` | Pipeline diagram (APDB → GCS → BigQuery → TAP), chunk lifecycle, BigQuery datasets, which repo owns what, cross-repo change checklist | The system-level picture no single repo provides. Read before cross-repo work |
 | `docs/glossary.md` | APDB, PPDB, replica chunk, datasets, facilities, environments | Shared vocabulary |
+| `docs/workflow-tickets.md` | Ticket lifecycle: start, work, cross-repo changes, push and draft PRs, CI, review, close-out | How Claude handles a ticket, and where it stops to ask you |
 | `docs/components/*.md` | Detailed reference per submodule: configs, env vars, message formats, Terraform resources, Helm values. For idf_deploy, phalanx and sdm_schemas, only the PPDB parts | Read on demand. Each records the commit it was written from, so you can tell when it may be stale |
 | `notes/tickets/` | One `DM-NNNNN/` directory per ticket, copied from `_template/`: `plan.md` (goal, approach, repos and branches), `todo.md` (checklist), `notes.md` (dated log) | Ticket planning and history, kept with the workspace so it can be found later. Scripts and artifacts go elsewhere (component repos or `ppdb-scripts`) |
 | `repos/` | The component repositories as git submodules | Where code changes happen. Each has its own branches, PRs and CI |

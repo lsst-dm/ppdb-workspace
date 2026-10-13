@@ -30,6 +30,8 @@ cross-repo work.
 
 - `docs/architecture.md`: pipeline diagram, chunk lifecycle, BigQuery datasets, ownership table, cross-repo change checklist
 - `docs/glossary.md`: APDB/PPDB terms, environments, facilities
+- `docs/workflow-tickets.md`: ticket lifecycle from start to close-out, and
+  what Claude does on its own vs. asks first
 - `docs/components/<repo>.md`: detailed reference per component. dax_ppdb
   (config, datasets, env vars, pipeline steps, CLIs); ppdb-cloud-functions
   (message contracts, error handling, deploy workflows); idf_deploy and
@@ -55,14 +57,23 @@ don't build new work on it), `felis` (schema tooling), `ppdb-config`
 
 ## Conventions
 
-- Work is tracked in Jira (project **DM**). Branches in component repos are
-  `tickets/DM-NNNNN`; workspace-only branches use `u/JeremyMcCormick/<topic>`.
-- Commit inside the submodule, then commit the updated submodule pointer in
-  this repo only when the workspace should track that revision.
-- Do not push, open PRs, or run Terraform/deploy commands without asking.
-  `.claude/settings.json` denies the destructive ones outright (push,
-  `terraform apply`, GCP deploys/deletes, `kubectl apply/delete`); the user
-  runs those. Note that opening a PR in `ppdb-cloud-functions` deploys to dev.
+- **Ticket work follows `docs/workflow-tickets.md`.** Read it when starting or
+  resuming a ticket.
+  - The branch is `tickets/DM-NNNNN`, both in the affected submodules and in
+    this workspace.
+  - Claude creates branches, commits, tests and watches CI on its own.
+  - Claude **asks before** `git push`, `gh pr create` (always as a draft) and
+    `gh pr ready`.
+  - On a CI failure, Claude reports it and doesn't fix it unless asked.
+  - The user picks reviewers and merges. **Claude never merges** (`gh pr merge`
+    is denied).
+- Work is tracked in Jira (project **DM**). Non-ticket workspace branches use
+  `u/JeremyMcCormick/<topic>`.
+- Commit inside the submodule first. Commit submodule pointer bumps in this
+  repo at ticket close-out, or when asked.
+- Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
+  `.claude/settings.json` denies them. Opening or updating a PR in
+  `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.
 
 ## Environments
 
