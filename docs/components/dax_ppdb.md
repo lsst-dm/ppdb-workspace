@@ -139,6 +139,9 @@ SSO ingest bucket under a unique sortable prefix. It then publishes to the
 
 ## Packaging and images
 
+- Local build, from `repos/dax_ppdb` in the `ppdb_env` conda env:
+  `pip install -r requirements.txt` for dependencies, then
+  `pip install --no-deps .` for the package. Reinstall after code changes.
 - `requirements.txt` + `pyproject.toml`. Depends on `lsst-dax-apdb`,
   `lsst-dax-ppdbx-gcp` (being retired; currently provides the Pub/Sub
   `Publisher` and storage helpers), `lsst-felis`, `lsst-resources`, and

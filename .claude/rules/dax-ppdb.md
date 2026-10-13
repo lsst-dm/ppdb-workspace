@@ -29,8 +29,13 @@ Check with `gcloud config get-value project` first.
 
 ```bash
 cd repos/dax_ppdb
+conda run -n ppdb_env pip install -r requirements.txt   # dependencies (when they change)
+conda run -n ppdb_env pip install --no-deps .           # build/install the package
 conda run -n ppdb_env pytest -n auto tests/
 ```
+
+Reinstall with `pip install --no-deps .` after code changes before running
+tests or CLIs. It's a regular install, not editable.
 
 CI (`.github/workflows/build.yaml`) installs `requirements.txt`, pytest,
 pytest-xdist, then `uv pip install --no-deps -e .`. It also installs `postgresql` from conda-forge for the SQL tests, and authenticates

@@ -15,6 +15,10 @@ The other schemas belong to other teams.
 - Keep the `ppdb` version aligned with `ApdbSchema`.
 - PPDB `DiaObject` is latest-version-only and has no `validityEndMjdTai`.
   dax_ppdb adds internal-only columns itself.
+- Build/install from `repos/sdm_schemas`: `conda run -n ppdb_env pip install -r requirements.txt`
+  for dependencies, then `conda run -n ppdb_env pip install --no-deps .`.
+  dax_ppdb reads `resource://lsst.sdm.schemas/ppdb.yaml` from the **installed**
+  package, so reinstall after editing a schema before testing it with dax_ppdb.
 - Validate with `conda run -n ppdb_env felis validate python/lsst/sdm/schemas/ppdb.yaml`
   (or `make check` for everything).
 - A schema change usually also needs dax_ppdb and BigQuery table updates and a

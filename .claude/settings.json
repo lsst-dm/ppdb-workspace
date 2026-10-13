@@ -12,6 +12,8 @@
       "Bash(git submodule foreach git fetch:*)",
       "Bash(git submodule foreach 'git status -sb')",
       "Bash(conda run -n ppdb_env pytest:*)",
+      "Bash(conda run -n ppdb_env pip install --no-deps .)",
+      "Bash(conda run -n ppdb_env pip install -r requirements.txt)",
       "Bash(terraform fmt:*)",
       "Bash(terraform validate:*)",
       "Bash(terraform plan:*)",

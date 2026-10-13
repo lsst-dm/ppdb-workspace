@@ -50,8 +50,13 @@ column changes needed in existing BigQuery tables) → TAP_SCHEMA image rebuild
 Existing BigQuery tables aren't migrated automatically. `create-datasets`
 creates objects; altering live tables is a separate, manual step.
 
-## Validation and CI
+## Build, validation and CI
 
+- Local build, from `repos/sdm_schemas` in the `ppdb_env` conda env:
+  `pip install -r requirements.txt` for dependencies, then
+  `pip install --no-deps .` to install `lsst.sdm.schemas`. Because dax_ppdb
+  loads `ppdb.yaml` from the installed package, schema edits take effect for
+  dax_ppdb only after reinstalling.
 - `make check` runs `felis validate yml/*.yaml` (needs `lsst-felis`, which is in `ppdb_env`).
 - CI: `validate.yaml`, `validate_extra_checks.yaml`, `test_{sqlite,postgresql,mysql}.yaml`,
   `compare.yaml`, `check_band_columns.yaml`, `build.yaml` (TAP schema images), `docs.yaml`.
