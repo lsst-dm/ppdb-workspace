@@ -16,3 +16,7 @@
 	url = https://github.com/lsst-sqre/phalanx
 	branch = main
 	shallow = true
+[submodule "repos/sdm_schemas"]
+	path = repos/sdm_schemas
+	url = https://github.com/lsst/sdm_schemas
+	branch = main

@@ -15,6 +15,9 @@
         },
         {
             "path": "repos/phalanx"
+        },
+        {
+            "path": "repos/sdm_schemas"
         }
     ],
     "settings": {
