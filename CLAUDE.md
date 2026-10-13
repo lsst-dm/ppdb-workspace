@@ -8,36 +8,46 @@ It holds no product code itself: the component repos are git submodules under
 
 | Submodule | Upstream | Role |
 |---|---|---|
-| `repos/dax_ppdb` | lsst/dax_ppdb | Core Python package (`lsst.dax.ppdb`): PPDB schema/config, APDB→PPDB replication, Parquet export and GCS upload of replica chunks, BigQuery chunk promotion, SSO upload. CLIs: `ppdb-cli`, `ppdb-replication`. |
-| `repos/ppdb-cloud-functions` | lsst-dm/ppdb-cloud-functions | GCP Cloud Run functions and Dataflow (Apache Beam) jobs: `stage_chunk`, `track_chunk`, `promote_chunks`, `load_sso`. |
-| `repos/idf_deploy` | lsst/idf_deploy | Terraform for GCP. PPDB lives in `environment/deployments/ppdb/` (`cloudsql/`, `services/`, `env/{dev,int}*.tfvars`); applied by `.github/workflows/ppdb-{dev,int,prod}-*-tf.yaml`. |
-| `repos/phalanx` | lsst-sqre/phalanx | Kubernetes/Argo CD app configs. PPDB apps: `applications/ppdb-replication` (runs at USDF), `applications/ppdbtap` (TAP service on the BigQuery backend, IDF). |
+| `repos/dax_ppdb` | lsst/dax_ppdb | Core Python package (`lsst.dax.ppdb`): replication, Parquet export, GCS upload, BigQuery promotion. CLIs: `ppdb-cli`, `ppdb-replication`. |
+| `repos/ppdb-cloud-functions` | lsst-dm/ppdb-cloud-functions | Cloud Run functions/jobs and Dataflow jobs: `stage_chunk`, `track_chunk`, `promote_chunks`, `load_sso`. |
+| `repos/idf_deploy` | lsst/idf_deploy | Terraform for GCP; PPDB in `environment/deployments/ppdb/`. |
+| `repos/phalanx` | lsst-sqre/phalanx | Kubernetes app configs; PPDB apps `ppdb-replication` (USDF) and `ppdbtap` (IDF). |
+| `repos/sdm_schemas` | lsst/sdm_schemas | Felis schemas: `ppdb.yaml` (built from `apdb.yaml` + `sso_base.yaml`), `dp2_prompt.yaml`; source of BigQuery tables and ppdbtap TAP_SCHEMA. |
 
-## Data flow (big picture)
+Component-specific guidance (build/test, layout, deploy behavior) is in
+`.claude/rules/` and loads automatically when working in that repo.
 
-1. **Replication** (`ppdb-replication run`, deployed via phalanx `ppdb-replication`
-   at USDF) reads replica chunks from the APDB (`lsst.dax.apdb`) and records them
-   in the PPDB (Cloud SQL Postgres).
-2. **Upload** (`ppdb-replication upload-chunks`) writes chunks as Parquet and
-   uploads them to GCS.
-3. **Staging**: Pub/Sub triggers `stage_chunk`, which launches a Dataflow job
-   to load the Parquet into BigQuery staging tables; `track_chunk` records
-   chunk status.
-4. **Promotion**: `promote_chunks` moves staged chunks into the production
-   BigQuery tables (logic in `dax_ppdb` `bigquery/chunk_promoter.py`).
-5. **Serving**: `ppdbtap` (phalanx) exposes the BigQuery dataset over TAP.
+## Data flow (short)
 
-GCP resources for steps 2–4 (buckets, Pub/Sub, Cloud Run, Dataflow templates,
-BigQuery datasets, IAM) are defined in `idf_deploy/environment/deployments/ppdb/services/`.
-A change to a function's env vars, topics, or permissions usually needs a
-matching Terraform change in `idf_deploy`.
+APDB → `ppdb-replication run` (Parquet export, status `exported`) →
+`upload-chunks` (GCS, `uploaded`) → `stage_chunk` Dataflow (BigQuery staging,
+`staged`) → `promote_chunks` (`ppdb_internal` + `ppdb_public`, `promoted`) → `ppdbtap` (TAP).
+Stages are wired by Pub/Sub; all GCP resources are in `idf_deploy`. Most
+changes span more than one repo. Read `docs/architecture.md` before
+cross-repo work.
+
+## Docs and notes
+
+- `docs/architecture.md`: pipeline diagram, chunk lifecycle, BigQuery datasets, ownership table, cross-repo change checklist
+- `docs/glossary.md`: APDB/PPDB terms, environments, facilities
+- `docs/components/<repo>.md`: detailed reference per component. dax_ppdb
+  (config, datasets, env vars, pipeline steps, CLIs); ppdb-cloud-functions
+  (message contracts, error handling, deploy workflows); idf_deploy and
+  phalanx (PPDB resources, per-env values, IAM, secrets); sdm_schemas
+  (PPDB schemas, consumers, schema change path)
+- `notes/tickets/DM-NNNNN.md`: working state per ticket. Read it at session
+  start when working a ticket, update it before stopping. Copy from `_template.md`.
+
+Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
+ticket state → `notes/tickets/`, durable system facts → `docs/`, and only
+workspace-wide essentials here.
 
 ## Related repos (not submodules)
 
-Checked out as siblings in `~/code` if needed: `dax_apdb` (APDB, replication
-source), `dax_ppdbx_gcp` (GCP helpers that `dax_ppdb` currently depends on;
-slated for retirement and archiving, so don't build new work on it), `felis` and
-`sdm_schemas` (schema definitions), `ppdb-config`, `ppdb-scripts`.
+Sibling checkouts in `~/code` if needed: `dax_apdb` (replication source),
+`dax_ppdbx_gcp` (GCP helpers dax_ppdb still imports; **being retired**, so
+don't build new work on it), `felis` (schema tooling), `ppdb-config`
+(PPDB YAML configs deployed to `gs://ppdb-<env>-config`), `ppdb-scripts`.
 
 ## Conventions
 
@@ -48,9 +58,30 @@ slated for retirement and archiving, so don't build new work on it), `felis` and
 - Do not push, open PRs, or run Terraform/deploy commands without asking.
   `.claude/settings.json` denies the destructive ones outright (push,
   `terraform apply`, GCP deploys/deletes, `kubectl apply/delete`); the user
-  runs those.
-- `dax_ppdb` is a Science Pipelines package: tests are `pytest` under `tests/`;
-  it depends on other `lsst-*` packages (`dax_apdb`, `felis`, `resources`).
+  runs those. Note that opening a PR in `ppdb-cloud-functions` deploys to dev.
+
+## Environments
+
+All repos use the conda env **`ppdb_env`**, except phalanx, which uses
+**`phalanx_env`**. Shell state doesn't persist between Bash calls, so prefix
+commands with `conda run -n ppdb_env ...` (or `phalanx_env`) instead of
+relying on `conda activate`.
+
+### GCP projects
+
+| Env | Project ID | Use for tests? |
+|---|---|---|
+| dev | `ppdb-dev-5c07` | **Yes.** All tests and experiments run here |
+| int | `ppdb-int-6c62` | **No.** Never run tests against int |
+| prod | none yet | n/a |
+
+Select the project with `gcloud config set project PROJECT_ID`. Before running
+anything that touches GCP (tests, `bq`, `terraform plan`), check the active
+project with `gcloud config get-value project`. If it isn't
+`ppdb-dev-5c07`, stop and ask instead of switching silently.
+
+Nothing is deployed from local commands. Local `terraform` use is limited to
+`plan`/`validate`/`fmt` for review; deploys happen in CI.
 
 ## Workspace commands
 
@@ -60,5 +91,3 @@ git submodule foreach git fetch           # update remotes
 git submodule update --remote             # move submodules to upstream main
 git submodule foreach 'git status -sb'    # branch/dirty state across repos
 ```
-
-Open `ppdb.code-workspace` in VS Code for a multi-root view.

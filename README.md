@@ -13,6 +13,7 @@ Claude Code context (`CLAUDE.md`, `.claude/`) and cross-repo notes.
 | `repos/ppdb-cloud-functions` | [lsst-dm/ppdb-cloud-functions](https://github.com/lsst-dm/ppdb-cloud-functions) | Cloud Run functions and Dataflow jobs for loading chunks into BigQuery |
 | `repos/idf_deploy` | [lsst/idf_deploy](https://github.com/lsst/idf_deploy) | Terraform for the GCP projects (PPDB under `environment/deployments/ppdb/`) |
 | `repos/phalanx` | [lsst-sqre/phalanx](https://github.com/lsst-sqre/phalanx) | Kubernetes app configs (`ppdb-replication`, `ppdbtap`) |
+| `repos/sdm_schemas` | [lsst/sdm_schemas](https://github.com/lsst/sdm_schemas) | Felis schemas (`ppdb.yaml`, `apdb.yaml`, `dp2_prompt.yaml`) |
 
 See [`CLAUDE.md`](CLAUDE.md) for how the pieces fit together.
 
@@ -54,6 +55,12 @@ here, but only when the workspace should track that revision.
 ## Claude Code
 
 - `CLAUDE.md` holds the system overview, component map, data flow, and conventions.
+- `.claude/rules/` holds per-component guidance, loaded when working in that repo.
+- `docs/` holds architecture and glossary; `notes/tickets/` holds per-ticket working notes.
+- `CLAUDE.local.md` (gitignored) is for personal context.
+- `.claude/hooks/session-start.sh` runs when a Claude session starts. It warns
+  if the active gcloud project isn't `ppdb-dev-5c07` and gives Claude a
+  branch/dirty summary of each submodule.
 - `.claude/settings.json` holds shared permissions. Read-only git, `terraform plan`,
   and `bq show/ls` are pre-approved. Pushes, Terraform apply/destroy, GCP
   deploys and deletes, and `kubectl apply/delete` are denied, so you run those
