@@ -1,0 +1,28 @@
+{
+    "folders": [
+        {
+            "name": "ppdb-workspace",
+            "path": "."
+        },
+        {
+            "path": "repos/dax_ppdb"
+        },
+        {
+            "path": "repos/ppdb-cloud-functions"
+        },
+        {
+            "path": "repos/idf_deploy"
+        },
+        {
+            "path": "repos/phalanx"
+        },
+        {
+            "path": "repos/sdm_schemas"
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "repos": true
+        }
+    }
+}

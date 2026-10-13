@@ -1,0 +1,76 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git fetch:*)",
+      "Bash(git submodule status:*)",
+      "Bash(git submodule foreach git status:*)",
+      "Bash(git submodule foreach git fetch:*)",
+      "Bash(git submodule foreach 'git status -sb')",
+      "Bash(conda run -n ppdb_env pytest:*)",
+      "Bash(conda run -n ppdb_env pip install --no-deps .)",
+      "Bash(conda run -n ppdb_env pip install -r requirements.txt)",
+      "Bash(terraform fmt:*)",
+      "Bash(terraform validate:*)",
+      "Bash(terraform plan:*)",
+      "Bash(bq show:*)",
+      "Bash(bq ls:*)",
+      "Bash(gcloud config list:*)",
+      "Bash(gcloud config get-value:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr status:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git -C * push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr ready:*)",
+      "Bash(gh api:*)"
+    ],
+    "deny": [
+      "Bash(gh pr merge:*)",
+      "Bash(terraform apply:*)",
+      "Bash(terraform destroy:*)",
+      "Bash(terraform import:*)",
+      "Bash(terraform state:*)",
+      "Bash(gcloud run deploy:*)",
+      "Bash(gcloud functions deploy:*)",
+      "Bash(gcloud functions delete:*)",
+      "Bash(gcloud storage rm:*)",
+      "Bash(gsutil rm:*)",
+      "Bash(bq rm:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(kubectl delete:*)",
+      "Bash(argocd app sync:*)",
+      "mcp__atlassian__createJiraIssue",
+      "mcp__atlassian__editJiraIssue",
+      "mcp__atlassian__transitionJiraIssue",
+      "mcp__atlassian__addCommentToJiraIssue",
+      "mcp__atlassian__addWorklogToJiraIssue",
+      "mcp__atlassian__createIssueLink"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.sh",
+            "timeout": 20,
+            "statusMessage": "Checking gcloud project and submodules..."
+          }
+        ]
+      }
+    ]
+  }
+}
