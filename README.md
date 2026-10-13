@@ -41,6 +41,7 @@ ppdb-workspace/
 ├── docs/
 │   ├── architecture.md       # system overview across all repos
 │   ├── glossary.md           # PPDB terms
+│   ├── references.md         # links to external documentation
 │   ├── workflow-tickets.md   # ticket lifecycle with Claude
 │   └── components/           # detailed reference, one file per submodule
 ├── notes/
@@ -67,6 +68,7 @@ ppdb-workspace/
 | `.claude/rules/*.md` | Layout, build and test commands, deploy behavior, and gotchas for one component. Each has a `paths:` header such as `repos/dax_ppdb/**` | Claude loads a rule file only when working on files under its path, so component detail doesn't crowd every session |
 | `docs/architecture.md` | Pipeline diagram (APDB → GCS → BigQuery → TAP), chunk lifecycle, BigQuery datasets, which repo owns what, cross-repo change checklist | The system-level picture no single repo provides. Read before cross-repo work |
 | `docs/glossary.md` | APDB, PPDB, replica chunk, datasets, facilities, environments | Shared vocabulary |
+| `docs/references.md` | Links to external documentation | Reference material outside this workspace |
 | `docs/workflow-tickets.md` | Ticket lifecycle: start, work, cross-repo changes, push and draft PRs, CI, review, close-out | How Claude handles a ticket, and where it stops to ask you |
 | `docs/components/*.md` | Detailed reference per submodule: configs, env vars, message formats, Terraform resources, Helm values. For idf_deploy, phalanx and sdm_schemas, only the PPDB parts | Read on demand. Each records the commit it was written from, so you can tell when it may be stale |
 | `notes/tickets/` | One `DM-NNNNN/` directory per ticket, copied from `_template/`: `plan.md` (goal, approach, repos and branches), `todo.md` (checklist), `notes.md` (dated log) | Ticket planning and history, kept with the workspace so it can be found later. Scripts and artifacts go elsewhere (component repos or `ppdb-scripts`) |
