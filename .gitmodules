@@ -1,12 +1,18 @@
 [submodule "repos/dax_ppdb"]
 	path = repos/dax_ppdb
 	url = https://github.com/lsst/dax_ppdb
+	branch = main
 [submodule "repos/ppdb-cloud-functions"]
 	path = repos/ppdb-cloud-functions
 	url = https://github.com/lsst-dm/ppdb-cloud-functions
+	branch = main
 [submodule "repos/idf_deploy"]
 	path = repos/idf_deploy
 	url = https://github.com/lsst/idf_deploy
+	branch = main
+	shallow = true
 [submodule "repos/phalanx"]
 	path = repos/phalanx
 	url = https://github.com/lsst-sqre/phalanx
+	branch = main
+	shallow = true

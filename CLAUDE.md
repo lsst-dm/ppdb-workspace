@@ -35,7 +35,8 @@ matching Terraform change in `idf_deploy`.
 ## Related repos (not submodules)
 
 Checked out as siblings in `~/code` if needed: `dax_apdb` (APDB, replication
-source), `dax_ppdbx_gcp` (GCP helpers that `dax_ppdb` depends on), `felis` and
+source), `dax_ppdbx_gcp` (GCP helpers that `dax_ppdb` currently depends on;
+slated for retirement and archiving, so don't build new work on it), `felis` and
 `sdm_schemas` (schema definitions), `ppdb-config`, `ppdb-scripts`.
 
 ## Conventions
@@ -45,6 +46,9 @@ source), `dax_ppdbx_gcp` (GCP helpers that `dax_ppdb` depends on), `felis` and
 - Commit inside the submodule, then commit the updated submodule pointer in
   this repo only when the workspace should track that revision.
 - Do not push, open PRs, or run Terraform/deploy commands without asking.
+  `.claude/settings.json` denies the destructive ones outright (push,
+  `terraform apply`, GCP deploys/deletes, `kubectl apply/delete`); the user
+  runs those.
 - `dax_ppdb` is a Science Pipelines package: tests are `pytest` under `tests/`;
   it depends on other `lsst-*` packages (`dax_apdb`, `felis`, `resources`).
 
@@ -53,6 +57,7 @@ source), `dax_ppdbx_gcp` (GCP helpers that `dax_ppdb` depends on), `felis` and
 ```bash
 git submodule update --init --recursive   # fetch submodules after cloning
 git submodule foreach git fetch           # update remotes
+git submodule update --remote             # move submodules to upstream main
 git submodule foreach 'git status -sb'    # branch/dirty state across repos
 ```
 

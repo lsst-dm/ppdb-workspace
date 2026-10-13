@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git fetch:*)",
+      "Bash(git submodule status:*)",
+      "Bash(git submodule foreach git status:*)",
+      "Bash(git submodule foreach git fetch:*)",
+      "Bash(git submodule foreach 'git status -sb')",
+      "Bash(terraform fmt:*)",
+      "Bash(terraform validate:*)",
+      "Bash(terraform plan:*)",
+      "Bash(bq show:*)",
+      "Bash(bq ls:*)",
+      "Bash(gcloud config list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(terraform apply:*)",
+      "Bash(terraform destroy:*)",
+      "Bash(terraform import:*)",
+      "Bash(terraform state:*)",
+      "Bash(gcloud run deploy:*)",
+      "Bash(gcloud functions deploy:*)",
+      "Bash(gcloud functions delete:*)",
+      "Bash(gcloud dataflow:*)",
+      "Bash(gcloud storage rm:*)",
+      "Bash(gsutil rm:*)",
+      "Bash(bq rm:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(kubectl delete:*)",
+      "Bash(argocd app sync:*)"
+    ]
+  }
+}
