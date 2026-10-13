@@ -159,6 +159,8 @@ promotion writes bad data into internal.
 | Promotion | `dax_ppdb/bigquery/chunk_promoter.py`, `ppdb-cloud-functions/promote_chunks` | CI workflow + `.../services/promote-chunks.tf` (scheduler) |
 | SSO load | `dax_ppdb/bigquery/sso_uploader.py`, `ppdb-cloud-functions/load_sso` | `.../services/{load-sso,sso-uploader,dataflow-load-sso}.tf` |
 | GCP resources (buckets, topics, datasets, IAM, Cloud SQL) | none | `idf_deploy/environment/deployments/ppdb/` |
+| Table schemas (PPDB, APDB, SSO, DP2 prompt) | `sdm_schemas` (`ppdb.yaml`, `apdb.yaml`, `sso_base.yaml`, `dp2_prompt.yaml`) | Consumed by dax_ppdb `create-datasets`; released as `lsst.sdm.schemas` |
+| TAP_SCHEMA for ppdbtap | `sdm_schemas/tap-schema/build-all` (`idf{dev,int}-ppdbtap` from `ppdb.yaml`) | Image used by `phalanx/applications/ppdbtap` |
 | TAP service | CADC TAP (external) | `phalanx/applications/ppdbtap` |
 
 ## Cross-repo change checklist
@@ -175,6 +177,9 @@ promotion writes bad data into internal.
 ## External dependencies
 
 - `dax_apdb`: replication source (`ApdbReplica`, `ReplicaChunk`).
+- `sdm_schemas` (submodule): source of every table definition. The BigQuery
+  tables, the TAP_SCHEMA and the APDB itself all derive from its Felis YAML.
+  See [components/sdm_schemas.md](components/sdm_schemas.md).
 - `dax_ppdbx_gcp`: GCP helpers, e.g. `lsst.dax.ppdbx.gcp.pubsub.Publisher` in
   `chunk_uploader.py`. **Being retired**: move code into dax_ppdb rather than
   extending it.
