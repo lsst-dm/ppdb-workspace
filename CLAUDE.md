@@ -42,8 +42,8 @@ cross-repo work.
   `notes/tickets/_template/`. `plan.md` holds the goal and approach, and Claude
   asks before changing it. `todo.md` is the checklist, which Claude keeps
   current. `notes.md` is a dated log, which Claude appends to each session.
-  Read all three at session start when working a ticket. One-off scripts and
-  artifacts don't go here; they go in a component repo or in `ppdb-scripts`.
+  Read all three at session start when working a ticket. Scripts and other
+  artifacts don't go here; reusable code goes in the relevant component repo.
 
 Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
 ticket state → `notes/tickets/`, durable system facts → `docs/`, and only
@@ -54,7 +54,7 @@ workspace-wide essentials here.
 Sibling checkouts in `~/code` if needed: `dax_apdb` (replication source),
 `dax_ppdbx_gcp` (GCP helpers dax_ppdb still imports; **being retired**, so
 don't build new work on it), `felis` (schema tooling), `ppdb-config`
-(PPDB YAML configs deployed to `gs://ppdb-<env>-config`), `ppdb-scripts`.
+(PPDB YAML configs deployed to `gs://ppdb-<env>-config`).
 
 ## Conventions
 

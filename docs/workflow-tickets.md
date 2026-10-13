@@ -65,8 +65,8 @@ The user gives Claude a ticket number. The ticket already exists in Jira.
   - Anything touching GCP runs only in **dev** (`ppdb-dev-5c07`), never int.
 - **Commits:** small and focused, with an imperative summary line. The ticket
   number is in the branch name, not the commit message.
-- **Scripts and artifacts:** one-off scripts go in `ppdb-scripts` (separate
-  repo), not here. Reusable code goes in the relevant component repo.
+- **Scripts and artifacts:** not in this workspace. Reusable code goes in the
+  relevant component repo.
 
 ## 3. Cross-repo changes
 

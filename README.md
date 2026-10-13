@@ -71,7 +71,7 @@ ppdb-workspace/
 | `docs/references.md` | Links to external documentation | Reference material outside this workspace |
 | `docs/workflow-tickets.md` | Ticket lifecycle: start, work, cross-repo changes, push and draft PRs, CI, review, close-out | How Claude handles a ticket, and where it stops to ask you |
 | `docs/components/*.md` | Detailed reference per submodule: configs, env vars, message formats, Terraform resources, Helm values. For idf_deploy, phalanx and sdm_schemas, only the PPDB parts | Read on demand. Each records the commit it was written from, so you can tell when it may be stale |
-| `notes/tickets/` | One `DM-NNNNN/` directory per ticket, copied from `_template/`: `plan.md` (goal, approach, repos and branches), `todo.md` (checklist), `notes.md` (dated log) | Ticket planning and history, kept with the workspace so it can be found later. Scripts and artifacts go elsewhere (component repos or `ppdb-scripts`) |
+| `notes/tickets/` | One `DM-NNNNN/` directory per ticket, copied from `_template/`: `plan.md` (goal, approach, repos and branches), `todo.md` (checklist), `notes.md` (dated log) | Ticket planning and history, kept with the workspace so it can be found later. Scripts and artifacts don't go here |
 | `repos/` | The component repositories as git submodules | Where code changes happen. Each has its own branches, PRs and CI |
 
 ## Setup
