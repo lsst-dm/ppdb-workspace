@@ -40,7 +40,8 @@ The user gives Claude a ticket number. The ticket already exists in Jira.
 2. In the workspace: `git switch -c tickets/DM-NNNNN` from up-to-date `main`.
 3. Copy the template: `cp -r notes/tickets/_template notes/tickets/DM-NNNNN`.
 4. Draft `plan.md` with the user: goal, approach, affected repos,
-   cross-repo dependencies, open questions.
+   cross-repo dependencies, open questions. Use `/rubinobs-jira DM-NNNNN`
+   to pull the ticket, its epic, links and open sibling tickets as input.
 5. In each affected submodule:
 
    ```bash
@@ -158,6 +159,6 @@ After the user has merged the code PRs and says the ticket is done:
 
 ## Not automated (yet)
 
-- Creating Jira tickets or changing their status. The Atlassian connector
-  could do this later.
+- Creating Jira tickets, commenting, or changing their status. `/rubinobs-jira`
+  is read-only, and Jira write tools are denied in `.claude/settings.json`.
 - Requesting reviewers.

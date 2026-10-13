@@ -50,7 +50,13 @@
       "Bash(bq rm:*)",
       "Bash(kubectl apply:*)",
       "Bash(kubectl delete:*)",
-      "Bash(argocd app sync:*)"
+      "Bash(argocd app sync:*)",
+      "mcp__atlassian__createJiraIssue",
+      "mcp__atlassian__editJiraIssue",
+      "mcp__atlassian__transitionJiraIssue",
+      "mcp__atlassian__addCommentToJiraIssue",
+      "mcp__atlassian__addWorklogToJiraIssue",
+      "mcp__atlassian__createIssueLink"
     ]
   },
   "hooks": {

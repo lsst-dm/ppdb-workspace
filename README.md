@@ -28,6 +28,8 @@ ppdb-workspace/
 ├── .gitmodules               # submodule URLs and tracked branches
 ├── .claude/
 │   ├── settings.json         # permissions and hooks for Claude Code
+│   ├── skills/
+│   │   └── rubinobs-jira/    # /rubinobs-jira: read a ticket + context, draft a plan
 │   ├── hooks/
 │   │   └── session-start.sh  # runs at the start of each Claude session
 │   └── rules/                # per-component guidance, loaded by path
@@ -61,6 +63,7 @@ ppdb-workspace/
 | `.gitmodules` | URL and branch (`main`) for each submodule; `idf_deploy` and `phalanx` are shallow | Defines what `repos/` contains |
 | `.claude/settings.json` | `permissions.allow`: read-only commands Claude may run without asking. `permissions.ask`: commands that always prompt you (`git push`, `gh pr create`, `gh pr ready`, `gh api`). `permissions.deny`: commands Claude may never run (`gh pr merge`, `terraform apply`, GCP deploys and deletes, `kubectl apply/delete`). `hooks`: registers the session-start hook | Guardrails and fewer permission prompts. Commands on no list also prompt you |
 | `.claude/hooks/session-start.sh` | Bash script that checks `gcloud config get-value project` and runs `git status` in each submodule | Warns you if the active project isn't `ppdb-dev-5c07`, and gives Claude the current branch and dirty state of each repo |
+| `.claude/skills/rubinobs-jira/` | A Claude skill (`/rubinobs-jira DM-NNNNN`): reads a Rubin Jira ticket, its epic, links, subtasks and open siblings. Read-only | Summarizes a ticket's context and drafts `plan.md` when starting work |
 | `.claude/rules/*.md` | Layout, build and test commands, deploy behavior, and gotchas for one component. Each has a `paths:` header such as `repos/dax_ppdb/**` | Claude loads a rule file only when working on files under its path, so component detail doesn't crowd every session |
 | `docs/architecture.md` | Pipeline diagram (APDB → GCS → BigQuery → TAP), chunk lifecycle, BigQuery datasets, which repo owns what, cross-repo change checklist | The system-level picture no single repo provides. Read before cross-repo work |
 | `docs/glossary.md` | APDB, PPDB, replica chunk, datasets, facilities, environments | Shared vocabulary |
