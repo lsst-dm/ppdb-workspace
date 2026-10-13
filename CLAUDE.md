@@ -35,8 +35,12 @@ cross-repo work.
   (message contracts, error handling, deploy workflows); idf_deploy and
   phalanx (PPDB resources, per-env values, IAM, secrets); sdm_schemas
   (PPDB schemas, consumers, schema change path)
-- `notes/tickets/DM-NNNNN.md`: working state per ticket. Read it at session
-  start when working a ticket, update it before stopping. Copy from `_template.md`.
+- `notes/tickets/DM-NNNNN/`: one directory per ticket, copied from
+  `notes/tickets/_template/`. `plan.md` holds the goal and approach, and Claude
+  asks before changing it. `todo.md` is the checklist, which Claude keeps
+  current. `notes.md` is a dated log, which Claude appends to each session.
+  Read all three at session start when working a ticket. One-off scripts and
+  artifacts don't go here; they go in a component repo or in `ppdb-scripts`.
 
 Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
 ticket state → `notes/tickets/`, durable system facts → `docs/`, and only

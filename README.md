@@ -41,8 +41,8 @@ ppdb-workspace/
 │   ├── glossary.md           # PPDB terms
 │   └── components/           # detailed reference, one file per submodule
 ├── notes/
-│   └── tickets/              # working notes per Jira ticket
-│       └── _template.md
+│   └── tickets/              # one directory per Jira ticket
+│       └── _template/        # plan.md, todo.md, notes.md
 └── repos/                    # git submodules (the actual code)
     ├── dax_ppdb/
     ├── ppdb-cloud-functions/
@@ -64,7 +64,7 @@ ppdb-workspace/
 | `docs/architecture.md` | Pipeline diagram (APDB → GCS → BigQuery → TAP), chunk lifecycle, BigQuery datasets, which repo owns what, cross-repo change checklist | The system-level picture no single repo provides. Read before cross-repo work |
 | `docs/glossary.md` | APDB, PPDB, replica chunk, datasets, facilities, environments | Shared vocabulary |
 | `docs/components/*.md` | Detailed reference per submodule: configs, env vars, message formats, Terraform resources, Helm values. For idf_deploy, phalanx and sdm_schemas, only the PPDB parts | Read on demand. Each records the commit it was written from, so you can tell when it may be stale |
-| `notes/tickets/` | One `DM-NNNNN.md` per active ticket, copied from `_template.md`: goal, repos and branches, decisions, next steps, session log | Carries working state between Claude sessions. Delete or archive when the ticket is done |
+| `notes/tickets/` | One `DM-NNNNN/` directory per ticket, copied from `_template/`: `plan.md` (goal, approach, repos and branches), `todo.md` (checklist), `notes.md` (dated log) | Ticket planning and history, kept with the workspace so it can be found later. Scripts and artifacts go elsewhere (component repos or `ppdb-scripts`) |
 | `repos/` | The component repositories as git submodules | Where code changes happen. Each has its own branches, PRs and CI |
 
 ## Setup
