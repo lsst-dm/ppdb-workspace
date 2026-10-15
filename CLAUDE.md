@@ -65,6 +65,8 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
   - Claude commits, tests and watches CI on its own.
   - Claude **asks before creating any branch or PR**, in this workspace or a
     submodule. Name the branch or PR and wait for a yes.
+  - Claude **never switches branches** unless the user says to. Work stays on
+    the currently checked-out branch.
   - Claude pushes `tickets/*` branches on its own. It **asks before** force
     pushes, pushes to `main`, tag pushes, `gh pr create` (always as a draft)
     and `gh pr ready`.

@@ -9,7 +9,7 @@ for a given ticket.
 | Who | Does |
 |---|---|
 | **Claude, automatically** | Edits code, runs tests, commits, pushes existing `tickets/*` branches, keeps ticket notes current, watches CI |
-| **Claude, after asking** | Creating any branch, force pushes, pushes to `main`, tag pushes, `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
+| **Claude, after asking** | Creating or switching branches, force pushes, pushes to `main`, tag pushes, `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
 | **The user only** | Creates the Jira ticket, picks reviewers, merges PRs |
 
 `.claude/settings.json` enforces the boundaries. Push, PR creation,

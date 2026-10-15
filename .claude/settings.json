@@ -49,7 +49,11 @@
       "Bash(git checkout -b*)",
       "Bash(git -C * switch -c*)",
       "Bash(git -C * checkout -b*)",
-      "Bash(git branch -c*)"
+      "Bash(git branch -c*)",
+      "Bash(git switch*)",
+      "Bash(git -C * switch*)",
+      "Bash(git checkout*)",
+      "Bash(git -C * checkout*)"
     ],
     "deny": [
       "Bash(gh pr merge:*)",
