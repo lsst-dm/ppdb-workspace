@@ -8,6 +8,7 @@
 | [Sentry](https://docs.sentry.io/) | Error monitoring |
 | [lsst.io](https://www.lsst.io/) | General Rubin documentation: technical and developer docs |
 | [LSST Developer Guide](https://developer.lsst.io/) | DM development practices |
+| [rubinenv-feedstock](https://github.com/conda-forge/rubinenv-feedstock) | Conda-forge recipe for `rubin-env`, Rubin's standard Python environment (GitHub) |
 | [DM Technotes](https://www.lsst.io/dmtn/) | DMTN technical notes |
 | [Documenteer](https://documenteer.lsst.io/) | Rubin documentation tooling |
 | [Phalanx](https://phalanx.lsst.io/) | Rubin Kubernetes service deployment |
