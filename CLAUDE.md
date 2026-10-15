@@ -70,8 +70,9 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
     is denied).
 - Work is tracked in Jira (project **DM**). Non-ticket workspace branches use
   `u/JeremyMcCormick/<topic>`.
-- Commit inside the submodule first. Commit submodule pointer bumps in this
-  repo at ticket close-out, or when asked.
+- Work is committed and pushed in the submodule repos directly. **Ignore
+  submodule pointer changes** in this repo (`modified: repos/<name> (new
+  commits)`): don't commit them or ask about them.
 - Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
   `.claude/settings.json` denies them. Opening or updating a PR in
   `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.

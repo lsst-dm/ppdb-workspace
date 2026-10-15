@@ -106,8 +106,8 @@ git submodule update --remote
 git -C repos/dax_ppdb switch -c tickets/DM-NNNNN
 ```
 
-Commit inside the submodule first. Then commit the updated submodule pointer
-here, but only when the workspace should track that revision.
+Commit and push inside the submodule. Submodule pointer changes in this repo
+are ignored and not committed.
 
 ## How Claude uses this context
 
