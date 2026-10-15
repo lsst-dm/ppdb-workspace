@@ -180,6 +180,3 @@ promotion writes bad data into internal.
 - `sdm_schemas` (submodule): source of every table definition. The BigQuery
   tables, the TAP_SCHEMA and the APDB itself all derive from its Felis YAML.
   See [components/sdm_schemas.md](components/sdm_schemas.md).
-- `dax_ppdbx_gcp`: GCP helpers, e.g. `lsst.dax.ppdbx.gcp.pubsub.Publisher` in
-  `chunk_uploader.py`. **Being retired**: move code into dax_ppdb rather than
-  extending it.

@@ -8,8 +8,8 @@ for a given ticket.
 
 | Who | Does |
 |---|---|
-| **Claude, automatically** | Creates branches, edits code, runs tests, commits, keeps ticket notes current, watches CI |
-| **Claude, after asking** | `git push` (branches and tags), `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
+| **Claude, automatically** | Edits code, runs tests, commits, pushes existing `tickets/*` branches, keeps ticket notes current, watches CI |
+| **Claude, after asking** | Creating or switching branches, force pushes, pushes to `main`, tag pushes, `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
 | **The user only** | Creates the Jira ticket, picks reviewers, merges PRs |
 
 `.claude/settings.json` enforces the boundaries. Push, PR creation,
@@ -25,8 +25,8 @@ user can approve with full context.
 The same name is used everywhere: **`tickets/DM-NNNNN`**.
 
 - In each affected submodule (`repos/<name>`), for the code.
-- In this workspace, for the ticket's notes, doc updates, and submodule
-  pointer bump.
+- In this workspace, for the ticket's notes and doc updates. Submodule
+  pointer changes are ignored, not committed.
 
 Ticket code changes happen directly in the submodules (`repos/<name>`), not
 in other checkouts.
@@ -37,12 +37,12 @@ The user gives Claude a ticket number. The ticket already exists in Jira.
 
 1. Check the active gcloud project is `ppdb-dev-5c07` (the session-start
    hook reports it).
-2. In the workspace: `git switch -c tickets/DM-NNNNN` from up-to-date `main`.
+2. After asking: in the workspace, `git switch -c tickets/DM-NNNNN` from up-to-date `main`.
 3. Copy the template: `cp -r notes/tickets/_template notes/tickets/DM-NNNNN`.
 4. Draft `plan.md` with the user: goal, approach, affected repos,
    cross-repo dependencies, open questions. Use `/rubinobs-jira DM-NNNNN`
    to pull the ticket, its epic, links and open sibling tickets as input.
-5. In each affected submodule:
+5. After asking, in each affected submodule:
 
    ```bash
    git -C repos/<name> switch main && git -C repos/<name> pull
@@ -87,7 +87,7 @@ List related PRs in each PR description so reviewers see the whole change.
 
 ## 4. Push and open PRs
 
-For each repo with changes, after asking:
+For each repo with changes (the push needs no prompt; the PR is created after asking):
 
 ```bash
 cd repos/<name>
@@ -97,8 +97,9 @@ gh pr create --draft --base main --head tickets/DM-NNNNN \
 ```
 
 Run `git push` from inside the repo, not as `git -C <dir> push`. The
-permission rules match on how a command starts, and this keeps the "ask"
-prompt reliable. Write the PR body file in the session scratchpad, not in
+permission rules match on how a command starts: `git push [-u] origin
+tickets/*` is allowed, while `--force`/`-f` and anything naming `main` still
+prompt. Write the PR body file in the session scratchpad, not in
 the repo.
 
 PR description:
@@ -151,8 +152,8 @@ After the user has merged the code PRs and says the ticket is done:
    shipped, PR links, follow-ups.
 3. Move anything durable learned during the ticket into `docs/` or
    `.claude/rules/`.
-4. Stage the submodule pointer bumps (`git add repos/<name>`) and commit
-   everything on the workspace ticket branch.
+4. Commit the notes and doc changes on the workspace ticket branch. Leave
+   submodule pointer changes uncommitted.
 5. Ask, then push the workspace branch and open its PR (non-draft is fine;
    it's docs). The user merges it.
 6. Switch the workspace back to `main` and pull.

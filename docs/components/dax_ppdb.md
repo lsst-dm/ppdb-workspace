@@ -143,9 +143,9 @@ SSO ingest bucket under a unique sortable prefix. It then publishes to the
   `pip install -r requirements.txt` for dependencies, then
   `pip install --no-deps .` for the package. Reinstall after code changes.
 - `requirements.txt` + `pyproject.toml`. Depends on `lsst-dax-apdb`,
-  `lsst-dax-ppdbx-gcp` (being retired; currently provides the Pub/Sub
-  `Publisher` and storage helpers), `lsst-felis`, `lsst-resources`, and
-  `lsst.sdm.schemas` for the schema resource.
+  `lsst-felis`, `lsst-resources`, `lsst.sdm.schemas` for the schema
+  resource, and the Google Cloud client libraries directly. The former
+  `dax_ppdbx_gcp` dependency was removed in DM-56684.
 - `docker/Dockerfile.replication` → `ghcr.io/lsst/ppdb-replication`, built by
   `.github/workflows/docker.yaml` on PRs, `main`, and tags.
 - `cloudrun-vX.Y.Z` tags are what ppdb-cloud-functions pins.

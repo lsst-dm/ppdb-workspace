@@ -30,7 +30,7 @@ cross-repo work.
 
 - `docs/architecture.md`: pipeline diagram, chunk lifecycle, BigQuery datasets, ownership table, cross-repo change checklist
 - `docs/glossary.md`: APDB/PPDB terms, environments, facilities
-- `docs/references.md`: links to external documentation
+- `docs/references.md`: links to external documentation sites and GitHub repositories
 - `docs/workflow-tickets.md`: ticket lifecycle from start to close-out, and
   what Claude does on its own vs. asks first
 - `docs/components/<repo>.md`: detailed reference per component. dax_ppdb
@@ -52,9 +52,9 @@ workspace-wide essentials here.
 ## Related repos (not submodules)
 
 Sibling checkouts in `~/code` if needed: `dax_apdb` (replication source),
-`dax_ppdbx_gcp` (GCP helpers dax_ppdb still imports; **being retired**, so
-don't build new work on it), `felis` (schema tooling), `ppdb-config`
-(PPDB YAML configs deployed to `gs://ppdb-<env>-config`).
+`felis` (schema tooling), `ppdb-config` (PPDB YAML configs deployed to
+`gs://ppdb-<env>-config`). `dax_ppdbx_gcp` is retired and no longer used;
+its helpers now live in `lsst.dax.ppdb.gcp`.
 
 ## Conventions
 
@@ -62,16 +62,22 @@ don't build new work on it), `felis` (schema tooling), `ppdb-config`
   resuming a ticket.
   - The branch is `tickets/DM-NNNNN`, both in the affected submodules and in
     this workspace.
-  - Claude creates branches, commits, tests and watches CI on its own.
-  - Claude **asks before** `git push`, `gh pr create` (always as a draft) and
-    `gh pr ready`.
+  - Claude commits, tests and watches CI on its own.
+  - Claude **asks before creating any branch or PR**, in this workspace or a
+    submodule. Name the branch or PR and wait for a yes.
+  - Claude **never switches branches** unless the user says to. Work stays on
+    the currently checked-out branch.
+  - Claude pushes `tickets/*` branches on its own. It **asks before** force
+    pushes, pushes to `main`, tag pushes, `gh pr create` (always as a draft)
+    and `gh pr ready`.
   - On a CI failure, Claude reports it and doesn't fix it unless asked.
   - The user picks reviewers and merges. **Claude never merges** (`gh pr merge`
     is denied).
 - Work is tracked in Jira (project **DM**). Non-ticket workspace branches use
   `u/JeremyMcCormick/<topic>`.
-- Commit inside the submodule first. Commit submodule pointer bumps in this
-  repo at ticket close-out, or when asked.
+- Work is committed and pushed in the submodule repos directly. **Ignore
+  submodule pointer changes** in this repo (`modified: repos/<name> (new
+  commits)`): don't commit them or ask about them.
 - Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
   `.claude/settings.json` denies them. Opening or updating a PR in
   `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.

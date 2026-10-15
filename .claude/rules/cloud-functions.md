@@ -32,6 +32,12 @@ Makefile and shell scripts that no longer exist. Trust the workflows.
 - Local Python work uses the `ppdb_env` conda env. Nothing is deployed
   locally; deploys happen only through these workflows.
 
+## Code style
+
+New Python files start with the GPL header in
+`.claude/templates/license-header.txt`, with `{project}` set to
+`ppdb-cloud-functions`. Don't alter headers in existing files.
+
 ## Dependency on dax_ppdb
 
 Functions pin `lsst-dax-ppdb @ git+https://github.com/lsst/dax_ppdb@cloudrun-vX.Y.Z`.
