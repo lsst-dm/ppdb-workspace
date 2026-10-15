@@ -30,7 +30,7 @@ cross-repo work.
 
 - `docs/architecture.md`: pipeline diagram, chunk lifecycle, BigQuery datasets, ownership table, cross-repo change checklist
 - `docs/glossary.md`: APDB/PPDB terms, environments, facilities
-- `docs/references.md`: links to external documentation
+- `docs/references.md`: links to external documentation sites and GitHub repositories
 - `docs/workflow-tickets.md`: ticket lifecycle from start to close-out, and
   what Claude does on its own vs. asks first
 - `docs/components/<repo>.md`: detailed reference per component. dax_ppdb

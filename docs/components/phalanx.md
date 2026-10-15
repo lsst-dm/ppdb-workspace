@@ -11,6 +11,7 @@ Only PPDB-related apps are covered here.
 | `ppdbtap` | `idfdev`, `idfint` | TAP service over BigQuery `ppdb_public` |
 | `bigquery-kafka` | `idfdev`, `idfint` | Query worker for ppdbtap (source: lsst-sqre/qserv-kafka) |
 | `sasquatch` subchart `charts/ppdbtap` | `idfdev`, `idfint` | Kafka topics/users `lsst.ppdbtap.job-{run,status,delete}` |
+| `repertoire` | all RSP envs; PPDB parts in `idfdev`, `idfint` | Service discovery: the `prompt` dataset, ppdbtap's URL, and the ppdbtap TAP_SCHEMA contents |
 
 Apps are enabled in `environments/values-<env>.yaml`.
 
@@ -69,6 +70,28 @@ Chart `applications/ppdbtap/`, a wrapper around `charts/cadc-tap` with `backend:
   **science-platform** instance, not the PPDB one. SA `ppdbtap@science-platform-<env>-*`.
 - **Secrets:** `uws-db-password`, `tap-schema-password`, `google_creds.json`
   (async results to GCS), and `sentry-dsn` if enabled.
+
+## repertoire
+
+Chart `applications/repertoire/`, owned by SQuaRE and shared by all RSP
+services. The PPDB-related parts:
+
+- **Datasets:** `prompt` ("Prompt products", docs `prompt-products.lsst.io`)
+  is listed in `config.availableDatasets` for `idfdev` and `idfint`, and
+  `config.rules.ppdbtap` maps it to `https://<host>/api/ppdbtap`. The
+  `prompt` ObsCore config comes from `lsst-dm/dax_obscore` `configs/prompt.yaml`.
+- **TAP_SCHEMA:** `config.tap.servers.ppdbtap` lists the sdm_schemas schemas
+  that repertoire loads into ppdbtap's TAP_SCHEMA. Default schemas are
+  `ppdb`, database `ppdbtap` (key `ppdbtap-database-password`), disabled
+  unless an env enables it. Per env:
+  - idfdev: enabled, `schemaVersion: releases/w.2026.38`
+  - idfint: enabled, `schemaVersion: tickets/DM-52639`, schemas `ppdb` and `dp2_prompt`
+- **Schema source:** `config.tap.schemaSourceTemplate`, by default
+  `gs://rubin-sdm-schemas-artifacts/{version}/schemas.tar.gz`. A
+  TAP_SCHEMA change therefore needs a published sdm_schemas artifact and a
+  `schemaVersion` bump here.
+- **Cloud SQL:** reaches the science-platform instance as
+  `repertoire@science-platform-<env>-*.iam`.
 
 ## Editing conventions
 

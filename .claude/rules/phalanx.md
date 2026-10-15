@@ -14,7 +14,9 @@ PPDB's:
 | `applications/ppdbtap` | `idfdev`, `idfint` | CADC TAP service on the BigQuery backend (`cadc-tap.config.backend: bigquery`) |
 
 Related, not PPDB-owned: `applications/bigquery-kafka` (runs ppdbtap's BigQuery
-queries) and the `sasquatch` subchart `charts/ppdbtap` (its Kafka topics).
+queries), the `sasquatch` subchart `charts/ppdbtap` (its Kafka topics), and
+`applications/repertoire` (the `prompt` dataset, and the schemas and
+`schemaVersion` loaded into ppdbtap's TAP_SCHEMA via `config.tap.servers.ppdbtap`).
 
 Apps are enabled per environment in `environments/values-<env>.yaml`.
 
