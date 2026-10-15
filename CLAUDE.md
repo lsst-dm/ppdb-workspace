@@ -52,9 +52,9 @@ workspace-wide essentials here.
 ## Related repos (not submodules)
 
 Sibling checkouts in `~/code` if needed: `dax_apdb` (replication source),
-`dax_ppdbx_gcp` (GCP helpers dax_ppdb still imports; **being retired**, so
-don't build new work on it), `felis` (schema tooling), `ppdb-config`
-(PPDB YAML configs deployed to `gs://ppdb-<env>-config`).
+`felis` (schema tooling), `ppdb-config` (PPDB YAML configs deployed to
+`gs://ppdb-<env>-config`). `dax_ppdbx_gcp` is retired and no longer used;
+its helpers now live in `lsst.dax.ppdb.gcp`.
 
 ## Conventions
 
