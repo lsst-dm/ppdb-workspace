@@ -67,8 +67,8 @@ docstring validation, `mypy`. All are run by `pre-commit`.
 ## Code style
 
 - **License header:** every Python module, tests included, starts with the
-  GPL header in `.claude/templates/dax_ppdb-license-header.txt`. Copy it
-  verbatim into new files, and don't alter it in existing ones.
+  GPL header in `.claude/templates/license-header.txt`, with `{project}`
+  set to `dax_ppdb`. Copy it into new files, and don't alter it in existing ones.
 - **Type hints** on all new or changed function parameters and returns.
 - **Docstrings** (numpydoc, triple double quotes) for new or substantially
   changed public modules, classes and functions:
