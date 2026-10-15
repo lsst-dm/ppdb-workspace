@@ -23,6 +23,7 @@
 
 | Repository | Notes |
 |---|---|
+| [lsst/dax_apdb](https://github.com/lsst/dax_apdb) | Interface to the Alert Production Database (Cassandra), whose data is replicated to the PPDB |
 | [lsst/dax_ppdb](https://github.com/lsst/dax_ppdb) | Core PPDB Python package: replication, chunk upload, BigQuery promotion |
 | [lsst-dm/ppdb-cloud-functions](https://github.com/lsst-dm/ppdb-cloud-functions) | Cloud Run functions and Dataflow jobs for loading chunks into BigQuery |
 | [lsst/idf_deploy](https://github.com/lsst/idf_deploy) | Terraform for the GCP projects; PPDB under `environment/deployments/ppdb/` |
