@@ -62,7 +62,9 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
   resuming a ticket.
   - The branch is `tickets/DM-NNNNN`, both in the affected submodules and in
     this workspace.
-  - Claude creates branches, commits, tests and watches CI on its own.
+  - Claude commits, tests and watches CI on its own.
+  - Claude **asks before creating any branch or PR**, in this workspace or a
+    submodule. Name the branch or PR and wait for a yes.
   - Claude pushes `tickets/*` branches on its own. It **asks before** force
     pushes, pushes to `main`, tag pushes, `gh pr create` (always as a draft)
     and `gh pr ready`.

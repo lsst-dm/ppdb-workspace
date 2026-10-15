@@ -8,8 +8,8 @@ for a given ticket.
 
 | Who | Does |
 |---|---|
-| **Claude, automatically** | Creates branches, edits code, runs tests, commits, pushes `tickets/*` branches, keeps ticket notes current, watches CI |
-| **Claude, after asking** | Force pushes, pushes to `main`, tag pushes, `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
+| **Claude, automatically** | Edits code, runs tests, commits, pushes existing `tickets/*` branches, keeps ticket notes current, watches CI |
+| **Claude, after asking** | Creating any branch, force pushes, pushes to `main`, tag pushes, `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
 | **The user only** | Creates the Jira ticket, picks reviewers, merges PRs |
 
 `.claude/settings.json` enforces the boundaries. Push, PR creation,
@@ -37,12 +37,12 @@ The user gives Claude a ticket number. The ticket already exists in Jira.
 
 1. Check the active gcloud project is `ppdb-dev-5c07` (the session-start
    hook reports it).
-2. In the workspace: `git switch -c tickets/DM-NNNNN` from up-to-date `main`.
+2. After asking: in the workspace, `git switch -c tickets/DM-NNNNN` from up-to-date `main`.
 3. Copy the template: `cp -r notes/tickets/_template notes/tickets/DM-NNNNN`.
 4. Draft `plan.md` with the user: goal, approach, affected repos,
    cross-repo dependencies, open questions. Use `/rubinobs-jira DM-NNNNN`
    to pull the ticket, its epic, links and open sibling tickets as input.
-5. In each affected submodule:
+5. After asking, in each affected submodule:
 
    ```bash
    git -C repos/<name> switch main && git -C repos/<name> pull

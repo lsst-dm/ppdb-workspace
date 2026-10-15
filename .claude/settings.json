@@ -44,7 +44,12 @@
       "Bash(git -C * push*main*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr ready:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "Bash(git switch -c*)",
+      "Bash(git checkout -b*)",
+      "Bash(git -C * switch -c*)",
+      "Bash(git -C * checkout -b*)",
+      "Bash(git branch -c*)"
     ],
     "deny": [
       "Bash(gh pr merge:*)",
