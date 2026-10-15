@@ -63,8 +63,9 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
   - The branch is `tickets/DM-NNNNN`, both in the affected submodules and in
     this workspace.
   - Claude creates branches, commits, tests and watches CI on its own.
-  - Claude **asks before** `git push`, `gh pr create` (always as a draft) and
-    `gh pr ready`.
+  - Claude pushes `tickets/*` branches on its own. It **asks before** force
+    pushes, pushes to `main`, tag pushes, `gh pr create` (always as a draft)
+    and `gh pr ready`.
   - On a CI failure, Claude reports it and doesn't fix it unless asked.
   - The user picks reviewers and merges. **Claude never merges** (`gh pr merge`
     is denied).

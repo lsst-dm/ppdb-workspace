@@ -8,8 +8,8 @@ for a given ticket.
 
 | Who | Does |
 |---|---|
-| **Claude, automatically** | Creates branches, edits code, runs tests, commits, keeps ticket notes current, watches CI |
-| **Claude, after asking** | `git push` (branches and tags), `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
+| **Claude, automatically** | Creates branches, edits code, runs tests, commits, pushes `tickets/*` branches, keeps ticket notes current, watches CI |
+| **Claude, after asking** | Force pushes, pushes to `main`, tag pushes, `gh pr create`, `gh pr ready` (un-draft), changes to `plan.md` |
 | **The user only** | Creates the Jira ticket, picks reviewers, merges PRs |
 
 `.claude/settings.json` enforces the boundaries. Push, PR creation,
@@ -87,7 +87,7 @@ List related PRs in each PR description so reviewers see the whole change.
 
 ## 4. Push and open PRs
 
-For each repo with changes, after asking:
+For each repo with changes (the push needs no prompt; the PR is created after asking):
 
 ```bash
 cd repos/<name>
@@ -97,8 +97,9 @@ gh pr create --draft --base main --head tickets/DM-NNNNN \
 ```
 
 Run `git push` from inside the repo, not as `git -C <dir> push`. The
-permission rules match on how a command starts, and this keeps the "ask"
-prompt reliable. Write the PR body file in the session scratchpad, not in
+permission rules match on how a command starts: `git push [-u] origin
+tickets/*` is allowed, while `--force`/`-f` and anything naming `main` still
+prompt. Write the PR body file in the session scratchpad, not in
 the repo.
 
 PR description:

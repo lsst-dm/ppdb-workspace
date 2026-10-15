@@ -27,11 +27,21 @@
       "Bash(gh run view:*)",
       "Bash(gh run list:*)",
       "Bash(gh pr diff:*)",
-      "Bash(gh pr status:*)"
+      "Bash(gh pr status:*)",
+      "Bash(git push origin tickets/*)",
+      "Bash(git push -u origin tickets/*)",
+      "Bash(git -C * push origin tickets/*)",
+      "Bash(git -C * push -u origin tickets/*)"
     ],
     "ask": [
-      "Bash(git push:*)",
-      "Bash(git -C * push*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push *main*)",
+      "Bash(git -C * push*--force*)",
+      "Bash(git -C * push* -f*)",
+      "Bash(git -C * push*main*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr ready:*)",
       "Bash(gh api:*)"
