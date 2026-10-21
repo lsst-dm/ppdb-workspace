@@ -64,7 +64,8 @@ DB access for `gcp-ppdb-administrators@lsst.cloud`.
 
 - The `ppdb_promotion` dataset. dax_ppdb `ppdb-cli create-datasets` creates it,
   along with the tables, views and search indexes in all datasets.
-- Postgres schema and tables (`chunk_tracking`), created by `ppdb-cli create-bq`.
+- Postgres schema and tables (`chunk_tracking`), created by `ppdb-cli create-bq`
+  (see [chunk tracking database](../chunk-tracking-db.md)).
 - Config file contents in `ppdb-<env>-config`, maintained in the sibling `ppdb-config` repo.
 
 ## Workflows
