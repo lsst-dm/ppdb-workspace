@@ -41,9 +41,10 @@ cross-repo work.
 - `notes/tickets/DM-NNNNN/`: one directory per ticket, copied from
   `notes/tickets/_template/`. `plan.md` holds the goal and approach, and Claude
   asks before changing it. `todo.md` is the checklist, which Claude keeps
-  current. `notes.md` is a dated log, which Claude appends to each session.
-  Read all three at session start when working a ticket. Scripts and other
-  artifacts don't go here; reusable code goes in the relevant component repo.
+  current. `notes.md` holds decisions, findings and gotchas by topic, edited
+  in place; it isn't a work log. Read all three at session start when working
+  a ticket. Scripts and other artifacts don't go here; reusable code goes in
+  the relevant component repo.
 
 Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
 ticket state → `notes/tickets/`, durable system facts → `docs/`, and only
@@ -78,6 +79,11 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
 - Work is committed and pushed in the submodule repos directly. **Ignore
   submodule pointer changes** in this repo (`modified: repos/<name> (new
   commits)`): don't commit them or ask about them.
+  - Submodules are set to `ignore = all`, so `git status` and `git diff` don't
+    show pointer changes, but they can still end up in a commit. Stage files
+    by path (no `commit -a` or `add -A`), and before pushing check that
+    `git diff --stat --ignore-submodules=none origin/main...HEAD` lists no
+    `repos/` paths. Workspace PRs never include submodule pointers.
 - Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
   `.claude/settings.json` denies them. Opening or updating a PR in
   `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.
