@@ -76,6 +76,10 @@ Each service account that reads or writes chunk status needs grants on
 | `cloudrun-track-chunks` | `track_chunk` |
 | `cloudrun-trigger-stage-chunk` | `stage_chunk` (`SELECT, UPDATE` only) |
 
+Dropping and recreating the `chunk_tracking` schema removes all of these
+grants. Apply them again after every `create-bq`. Otherwise the functions fail
+with `permission denied for schema chunk_tracking`.
+
 The grants for each account follow this pattern, shown for prod:
 
 ```sql
