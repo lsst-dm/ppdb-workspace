@@ -93,9 +93,18 @@ Consequences:
 
 Every `requirements*.txt` pins
 `lsst-dax-ppdb @ git+https://github.com/lsst/dax_ppdb@cloudrun-vX.Y.Z`
-(currently `cloudrun-v2.2.0`), except `stage_chunk/requirements-dataflow.txt`,
-which uses `@main`. To ship a dax_ppdb change, tag dax_ppdb, bump the pins,
-and merge (dev) or dispatch (int).
+(the latest `cloudrun-v*` tag in dax_ppdb), except
+`stage_chunk/requirements-dataflow.txt`, which uses `@main`. Released dax_ppdb changes reach the functions only through
+these `cloudrun-v*` tags.
+
+Usual workflow for a change that needs unreleased dax_ppdb code:
+
+1. Pin the affected functions to the dax_ppdb ticket branch
+   (`@tickets/DM-NNNNN`).
+2. If a deploy doesn't pick up new commits on that branch (the Google build
+   caches the install), pin to a commit SHA (`@<sha>`) instead.
+3. Before merging, tag dax_ppdb `cloudrun-vX.Y.Z` and set the pins to that
+   tag. Then merge (dev) or dispatch (int).
 
 ## Local
 

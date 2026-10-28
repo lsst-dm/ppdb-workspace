@@ -29,6 +29,8 @@ cross-repo work.
 ## Docs and notes
 
 - `docs/architecture.md`: pipeline diagram, chunk lifecycle, BigQuery datasets, ownership table, cross-repo change checklist
+- `docs/chunk-tracking-db.md`: Cloud SQL chunk tracking DB: proxy setup,
+  connecting, creating the schema, grants
 - `docs/glossary.md`: APDB/PPDB terms, environments, facilities
 - `docs/references.md`: links to external documentation sites and GitHub repositories
 - `docs/workflow-tickets.md`: ticket lifecycle from start to close-out, and
@@ -41,9 +43,10 @@ cross-repo work.
 - `notes/tickets/DM-NNNNN/`: one directory per ticket, copied from
   `notes/tickets/_template/`. `plan.md` holds the goal and approach, and Claude
   asks before changing it. `todo.md` is the checklist, which Claude keeps
-  current. `notes.md` is a dated log, which Claude appends to each session.
-  Read all three at session start when working a ticket. Scripts and other
-  artifacts don't go here; reusable code goes in the relevant component repo.
+  current. `notes.md` holds decisions, findings and gotchas by topic, edited
+  in place; it isn't a work log. Read all three at session start when working
+  a ticket. Scripts and other artifacts don't go here; reusable code goes in
+  the relevant component repo.
 
 Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
 ticket state → `notes/tickets/`, durable system facts → `docs/`, and only
@@ -73,11 +76,20 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
   - On a CI failure, Claude reports it and doesn't fix it unless asked.
   - The user picks reviewers and merges. **Claude never merges** (`gh pr merge`
     is denied).
-- Work is tracked in Jira (project **DM**). Non-ticket workspace branches use
-  `u/JeremyMcCormick/<topic>`.
+- Work is tracked in Jira (project **DM**), under the PPDB epic
+  [DM-52639](https://rubinobs.atlassian.net/browse/DM-52639). Tickets always
+  have `RubinTeam` set to `Data Engineering` (`customfield_10056`, option ID
+  `10216`). Non-ticket workspace branches use
+  `u/JeremyMcCormick/<topic>`. Follow-up fixes made after a ticket is merged,
+  which won't be reviewed, use `u/JeremyMcCormick/DM-NNNNN-<topic>`.
 - Work is committed and pushed in the submodule repos directly. **Ignore
   submodule pointer changes** in this repo (`modified: repos/<name> (new
   commits)`): don't commit them or ask about them.
+  - Submodules are set to `ignore = all`, so `git status` and `git diff` don't
+    show pointer changes, but they can still end up in a commit. Stage files
+    by path (no `commit -a` or `add -A`), and before pushing check that
+    `git diff --stat --ignore-submodules=none origin/main...HEAD` lists no
+    `repos/` paths. Workspace PRs never include submodule pointers.
 - Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
   `.claude/settings.json` denies them. Opening or updating a PR in
   `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.
