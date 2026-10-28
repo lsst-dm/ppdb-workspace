@@ -76,8 +76,12 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
   - On a CI failure, Claude reports it and doesn't fix it unless asked.
   - The user picks reviewers and merges. **Claude never merges** (`gh pr merge`
     is denied).
-- Work is tracked in Jira (project **DM**). Non-ticket workspace branches use
-  `u/JeremyMcCormick/<topic>`.
+- Work is tracked in Jira (project **DM**), under the PPDB epic
+  [DM-52639](https://rubinobs.atlassian.net/browse/DM-52639). Tickets always
+  have `RubinTeam` set to `Data Engineering` (`customfield_10056`, option ID
+  `10216`). Non-ticket workspace branches use
+  `u/JeremyMcCormick/<topic>`. Follow-up fixes made after a ticket is merged,
+  which won't be reviewed, use `u/JeremyMcCormick/DM-NNNNN-<topic>`.
 - Work is committed and pushed in the submodule repos directly. **Ignore
   submodule pointer changes** in this repo (`modified: repos/<name> (new
   commits)`): don't commit them or ask about them.
