@@ -19,6 +19,14 @@
   classified where they're caught.
 - The uploader resets a chunk to `exported` (and clears its GCS URI) when the
   staging message can't be published, rather than marking it `failed`.
+- Retry policy in `stage_chunk`: 429, all 5xx and network errors (including
+  `requests` and credential transport errors) are retried. Other 4xx and
+  unexpected errors are permanent and mark the chunk `failed`.
+- `Manifest.from_uri` wraps only parse errors (all `ValueError` subclasses)
+  in `InvalidManifestError`. Read errors propagate unwrapped so the caller
+  can tell transient from permanent; no `ManifestReadError` class.
+- `stage_chunk` opens one `PpdbBigQuery` per request and passes it to
+  `_mark_chunk_failed`, instead of opening one per status update.
 
 ## Known gaps
 
@@ -39,6 +47,9 @@
 - A chunk is `uploaded` with staging rows only if left over from the old
   `stage_chunk` or changed by hand. It's skipped without being marked
   `failed`.
+- Eventarc's fixed 10 second ack deadline is shorter than a cold start, so
+  Pub/Sub redelivers and the status check logs `invalid_chunk_status`
+  warnings for the duplicates. Fix in DM-56849.
 
 ## Gotchas
 
@@ -69,6 +80,15 @@ Scope is in `plan.md`. These are findings for whoever picks them up.
 - `ChunkPromoter._delete_staged_chunks()` already deletes staging rows by
   chunk ID and can be reused.
 - The manifest has a per-table `row_count` for checking rows after staging.
+
+### BigQuery load jobs (DM-56864)
+
+- Dataflow does no transformation for staging; batch `WriteToBigQuery` runs
+  load jobs itself. Load jobs would put the staging code in dax_ppdb and let
+  `stage_chunk` set `staged` or `failed` directly.
+- DM-56849 is a prerequisite: a synchronous `stage_chunk` would always exceed
+  the Eventarc ack deadline.
+- `load_sso` would move to load jobs on a separate ticket.
 
 ### Switch to psycopg (v3)
 

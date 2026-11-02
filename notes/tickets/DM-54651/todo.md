@@ -15,3 +15,10 @@
   staging publish fails
 - [x] `Manifest.from_uri`; manifest read in its own step in `stage_chunk`
 - [x] idf_deploy: Cloud SQL and BigQuery access for `stage_chunk`
+- [x] `InvalidManifestError` for an unparseable manifest; read errors
+  propagate unwrapped
+- [x] Retry policy: 429, 5xx and network errors retried; other errors are
+  permanent
+- [x] Review fixes: PPDB opened once per request, `chunk_id` parsed first,
+  `except ValueError` in `Manifest.from_uri`
+- [x] All functions pinned to dax_ppdb `cloudrun-v2.4.0`

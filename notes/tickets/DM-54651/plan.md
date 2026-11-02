@@ -5,7 +5,7 @@
      go in notes.md. -->
 
 Jira: https://rubinobs.atlassian.net/browse/DM-54651
-Status: in progress
+Status: merged
 
 ## Goal
 
@@ -70,20 +70,23 @@ Findings for each are in `notes.md`.
 
 - Switch to psycopg (v3).
 - Crash safety for promotion (DM-56671).
+- Duplicate Pub/Sub deliveries from Eventarc's 10 second ack deadline
+  (DM-56849).
+- Replace the stage chunk Dataflow job with BigQuery load jobs (DM-56864).
 
 ## Repos and branches
 
 | Repo | Branch | PR |
 |---|---|---|
-| dax_ppdb | tickets/DM-54651-v2 | [#68](https://github.com/lsst/dax_ppdb/pull/68) |
-| ppdb-cloud-functions | tickets/DM-54651-v2 | [#35](https://github.com/lsst-dm/ppdb-cloud-functions/pull/35) |
-| idf_deploy | tickets/DM-54651-v2 | [#976](https://github.com/lsst/idf_deploy/pull/976) |
+| dax_ppdb | tickets/DM-54651-v2 | [#68](https://github.com/lsst/dax_ppdb/pull/68) (merged) |
+| dax_ppdb | tickets/DM-54651-manifest-errors | [#70](https://github.com/lsst/dax_ppdb/pull/70) (merged) |
+| ppdb-cloud-functions | tickets/DM-54651-v2 | [#35](https://github.com/lsst-dm/ppdb-cloud-functions/pull/35) (merged) |
+| idf_deploy | tickets/DM-54651-v2 | [#976](https://github.com/lsst/idf_deploy/pull/976) (merged) |
 | ppdb-workspace | tickets/DM-54651 | [#3](https://github.com/lsst-dm/ppdb-workspace/pull/3) |
 
 ## Cross-repo dependencies
 
-- dax_ppdb merge → tag `cloudrun-vX.Y.Z` → set the `lsst-dax-ppdb` pin in
-  `stage_chunk` and `track_chunk` to that tag.
+- dax_ppdb is released as `cloudrun-v2.4.0`, and all functions pin it.
 - idf_deploy must be applied before the new `stage_chunk` is deployed,
   because the function now connects to Cloud SQL.
 - Database grants for `cloudrun-trigger-stage-chunk` are run by hand
