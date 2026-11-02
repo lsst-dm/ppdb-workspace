@@ -1,9 +1,11 @@
-# DM-NNNNN: notes
+# DM-NNNNN: Notes
 
-<!-- Dated log, newest last. Claude appends at the end of each session or
-     major step: what was done, findings, decisions and why, commands that
-     worked, dead ends, what's blocked. -->
+<!-- Reference notes, organized by topic and edited in place. Keep
+     decisions and why, findings, gotchas and open questions. Not a work
+     log: no session entries, progress updates or commit hashes. -->
 
-## YYYY-MM-DD
+## Decisions
 
--
+## Findings
+
+## Open questions

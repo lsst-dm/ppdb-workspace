@@ -33,7 +33,7 @@ DB access for `gcp-ppdb-administrators@lsst.cloud`.
 | `gcs.tf` | Buckets `ppdb-<env>-config` (PPDB YAML configs), `-dataflow` (templates, temp), `-export`, `-ingest` (chunk uploads), `-sso-ingest` |
 | `pubsub.tf` | Topics `stage-chunk-topic`, `track-chunk-topic`, `load-sso-topic`, and dead-letter topics `stage-chunk-dlt`, `track-chunk-dlt` |
 | `bigquery.tf` | Datasets `ppdb_staging`, `ppdb_internal`, `ppdb_public`, `ppdb_backup` (location US). TAP SA (`bigquery-kafka`): jobUser + readSessionUser on the project, dataViewer on public, internal, and any extra datasets |
-| `trigger-stage-chunk.tf` | Function `trigger-stage-chunk`, its SA, Eventarc trigger on `stage-chunk-topic`, permission to launch Dataflow as the stage-chunk Dataflow SA |
+| `trigger-stage-chunk.tf` | Function `trigger-stage-chunk`, SA `cloudrun-trigger-stage-chunk` (Cloud SQL IAM user, to read and update chunk status), Eventarc trigger on `stage-chunk-topic`, permission to launch Dataflow as the stage-chunk Dataflow SA |
 | `dataflow-stage-chunk.tf` | Dataflow worker SA: read ingest bucket, BigQuery data editor/job user, publish to `track-chunk-topic` |
 | `track-chunk.tf` | Function `track-chunk`, SA `cloudrun-track-chunks` (Cloud SQL IAM user), Eventarc trigger on `track-chunk-topic`, VPC egress, env vars |
 | `promote-chunks.tf` | Cloud Run job `promote-chunks`, SA `cloudrun-promote-chunks` (BQ editor, staging dataset access, Cloud SQL IAM user), Workflow `trigger-promote-chunks-cloudrun-job-workflow`, Cloud Scheduler `schedule-promote-chunks-workflow-job` |
@@ -43,7 +43,7 @@ DB access for `gcp-ppdb-administrators@lsst.cloud`.
 | `artifact-registry.tf` | Docker repo `ppdb-repo` |
 | `github-ci.tf` | Optional CI SA: BigQuery editor/job user, storage admin (dax_ppdb tests) |
 | `secrets.tf` | Secret `SENTRY_DSN` + accessor bindings |
-| `SQL/iam-sa-permissions.sql` | **Applied manually.** Postgres grants on schema `chunk_tracking` for the IAM users above. Written for dev (`ppdb-dev-5c07`) |
+| `SQL/iam-sa-permissions.sql` | **Applied manually**, and again whenever the schema is recreated. Postgres grants on schema `chunk_tracking` for the IAM users above. Written for dev (`ppdb-dev-5c07`) |
 
 ## Function and job configuration
 
@@ -64,7 +64,8 @@ DB access for `gcp-ppdb-administrators@lsst.cloud`.
 
 - The `ppdb_promotion` dataset. dax_ppdb `ppdb-cli create-datasets` creates it,
   along with the tables, views and search indexes in all datasets.
-- Postgres schema and tables (`chunk_tracking`), created by `ppdb-cli create-bq`.
+- Postgres schema and tables (`chunk_tracking`), created by `ppdb-cli create-bq`
+  (see [chunk tracking database](../chunk-tracking-db.md)).
 - Config file contents in `ppdb-<env>-config`, maintained in the sibling `ppdb-config` repo.
 
 ## Workflows

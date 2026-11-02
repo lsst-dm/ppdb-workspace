@@ -1,4 +1,4 @@
-# DM-NNNNN: to-do
+# DM-NNNNN: TODO
 
 <!-- Concrete steps as a checklist. Claude checks items off and adds new
      ones as work proceeds. Keep items small enough to finish in a session. -->

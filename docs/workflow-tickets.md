@@ -56,8 +56,9 @@ The user gives Claude a ticket number. The ticket already exists in Jira.
 - **Session start:** read `plan.md`, `todo.md` and `notes.md` for the ticket.
 - **Ticket notes:**
   - Keep `todo.md` current: check items off and add new ones.
-  - Append to `notes.md` at the end of each session or major step: what was
-    done, findings, decisions, what's blocked.
+  - Keep `notes.md` current: decisions and why, findings, gotchas and open
+    questions, organized by topic and edited in place. It isn't a work log,
+    so leave out session entries, progress updates and commit hashes.
   - Ask before changing `plan.md`.
   - Commit note updates to the workspace ticket branch as work proceeds.
 - **Build and test:** use the `ppdb_env` conda env.
@@ -129,7 +130,7 @@ Repo-specific cautions to mention when asking:
 ## 5. CI
 
 - Watch: `gh pr checks <pr> --repo <owner>/<name> --watch`.
-- Report the result in chat and in `notes.md`.
+- Report the result in chat.
 - **On failure:** report which check failed and the relevant log lines
   (`gh run view <run-id> --log-failed`). **Don't fix automatically.** Wait
   for the user to say what to do.
@@ -148,8 +149,8 @@ After the user has merged the code PRs and says the ticket is done:
 
 1. In each affected submodule: `switch main`, `pull`, and delete the local
    ticket branch (`git branch -d tickets/DM-NNNNN`).
-2. In `plan.md`, set `Status: merged`. Add a final `notes.md` entry: what
-   shipped, PR links, follow-ups.
+2. In `plan.md`, set `Status: merged`. Update `notes.md` with the
+   follow-ups.
 3. Move anything durable learned during the ticket into `docs/` or
    `.claude/rules/`.
 4. Commit the notes and doc changes on the workspace ticket branch. Leave

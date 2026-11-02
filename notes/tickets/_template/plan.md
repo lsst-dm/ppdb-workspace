@@ -1,7 +1,8 @@
 # DM-NNNNN: <title>
 
 <!-- The plan: goal, approach, scope. Written at the start; Claude asks
-     before changing it. Day-to-day progress goes in todo.md and notes.md. -->
+     before changing it. Progress goes in todo.md; decisions and findings
+     go in notes.md. -->
 
 Jira: https://rubinobs.atlassian.net/browse/DM-NNNNN
 Status: in progress | in review | merged | dropped
