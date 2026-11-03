@@ -38,7 +38,7 @@ DB access for `gcp-ppdb-administrators@lsst.cloud`.
 | `track-chunk.tf` | Function `track-chunk`, SA `cloudrun-track-chunks` (Cloud SQL IAM user), Eventarc trigger on `track-chunk-topic`, VPC egress, env vars |
 | `promote-chunks.tf` | Cloud Run job `promote-chunks`, SA `cloudrun-promote-chunks` (BQ editor, staging dataset access, Cloud SQL IAM user), Workflow `trigger-promote-chunks-cloudrun-job-workflow`, Cloud Scheduler `schedule-promote-chunks-workflow-job` |
 | `load-sso.tf`, `dataflow-load-sso.tf`, `sso-uploader.tf` | SSO path: function, Dataflow SA, uploader SA (write `-sso-ingest`, publish `load-sso-topic`) |
-| `usdf-replication.tf` | SA `usdf-replication` used by phalanx `ppdb-replication` at USDF: objectUser on `-ingest`, viewer on `-config`, publish `stage-chunk-topic`, Cloud SQL client + IAM DB user |
+| `usdf-replication.tf` | SA `usdf-replication` used by phalanx `ppdb-replication` at USDF: objectUser on `-chunk-ingest`, viewer on `-config`, publish `stage-chunk-topic`, Cloud SQL client + IAM DB user |
 | `cloudrun-build.tf`, `cloudrun-deploy.tf` | SAs used to build and deploy functions (the deploy SA is what ppdb-cloud-functions CI uses) |
 | `artifact-registry.tf` | Docker repo `ppdb-repo` |
 | `github-ci.tf` | Optional CI SA: BigQuery editor/job user, storage admin (dax_ppdb tests) |
