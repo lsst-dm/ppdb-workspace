@@ -122,8 +122,6 @@ PR description:
 
 Repo-specific cautions to mention when asking:
 
-- **ppdb-cloud-functions:** opening or updating a PR **deploys that function
-  to dev**.
 - **phalanx, idf_deploy:** upstream repos owned by other teams (SQuaRE, IT),
   with their own reviewers and CODEOWNERS.
 

@@ -20,10 +20,8 @@ Makefile and shell scripts that no longer exist. Trust the workflows.
 
 ## Deployment
 
-- Deploys are GitHub Actions in `.github/workflows/<name>-deploy-{dev,int}.yaml`.
-- **Dev deploys on pull requests and on push to `main`** when files under
-  that function's directory change. Opening a PR here changes the dev GCP project.
-- Int deploys are `workflow_dispatch` only.
+- Deploys are manual GitHub Actions workflows; see "Deployment" in
+  `docs/components/ppdb-cloud-functions.md`.
 - Runtime config comes from env vars (`os.environ[...]` at the top of each
   `main.py`), set by the workflow from GitHub environment variables. The GCP
   resources they refer to (topics, buckets, service accounts, datasets) are

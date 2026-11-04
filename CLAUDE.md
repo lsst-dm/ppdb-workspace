@@ -93,8 +93,7 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
     `git diff --stat --ignore-submodules=none origin/main...HEAD` lists no
     `repos/` paths. Workspace PRs never include submodule pointers.
 - Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
-  `.claude/settings.json` denies them. Opening or updating a PR in
-  `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.
+  `.claude/settings.json` denies them.
 
 ## Environments
 

@@ -72,16 +72,18 @@ the consumer here.
 
 | Workflow | Deploys | Triggers |
 |---|---|---|
-| `stage-chunk-deploy-{dev,int}` | function `trigger-stage-chunk` | dev: PR + push to `main` on path changes; int: manual |
-| `dataflow-build-flex-deploy-{dev,int}` | stage_chunk Beam image + flex template | same pattern |
-| `track-chunk-deploy-{dev,int}` | function `track-chunk` | same pattern |
-| `promote-chunks-deploy-{dev,int}` | image → Artifact Registry `ppdb-repo/promote-chunks:<sha>` → Cloud Run job | same pattern |
-| `load-sso-deploy-{dev,int}`, `load-sso-build-flex-deploy-{dev,int}` | load_sso function and template | same pattern |
+| `stage-chunk-deploy-{dev,int,prod}` | function `trigger-stage-chunk` | manual (`workflow_dispatch`), or from `deploy-all-<env>` |
+| `dataflow-build-flex-deploy-{dev,int,prod}` | stage_chunk Beam image + flex template | same |
+| `track-chunk-deploy-{dev,int,prod}` | function `track-chunk` | same |
+| `promote-chunks-deploy-{dev,int,prod}` | image → Artifact Registry `ppdb-repo/promote-chunks:<sha>` → Cloud Run job | same |
+| `load-sso-deploy-{dev,int,prod}`, `load-sso-build-flex-deploy-{dev,int,prod}` | load_sso function and template | same |
+| `deploy-all-{dev,int,prod}` | every function and job in that environment | manual (`workflow_dispatch`) |
 
 Consequences:
 
-- **A PR touching a function's files deploys it to dev before review.**
-- Int is deployed by hand (`workflow_dispatch`).
+- **Nothing deploys automatically.** Pull requests and pushes to `main`
+  deploy nothing; each environment, dev included, is deployed by running a
+  workflow by hand.
 - Terraform creates each function with placeholder code and
   `ignore_changes` on the source, so code comes only from these workflows.
   Env vars, service accounts, triggers and scaling come only from Terraform.
