@@ -57,8 +57,7 @@ With dax_ppdb installed (`ppdb_env`) and the proxy running:
 
 ```bash
 ppdb-cli create-bq --replication-dir=/tmp --bucket-name=fake --project-id=fake \
-  --object-prefix=fake --db-schema chunk_tracking "$DB_URL" fake_config.yaml \
-  --no-validate-config
+  --db-schema chunk_tracking "$DB_URL" fake_config.yaml --no-validate-config
 ```
 
 Only the database tables matter here. The BigQuery options are placeholders,
@@ -67,28 +66,11 @@ and the config file it writes (`fake_config.yaml`) is thrown away.
 ## Grants
 
 Each service account that reads or writes chunk status needs grants on
-`chunk_tracking`, as an IAM database user (`<sa>@<project>.iam`):
-
-| Service account | Used by |
-|---|---|
-| `usdf-replication` | phalanx `ppdb-replication` (export and upload) |
-| `cloudrun-promote-chunks` | `promote_chunks` |
-| `cloudrun-track-chunks` | `track_chunk` |
-| `cloudrun-trigger-stage-chunk` | `stage_chunk` (`SELECT, UPDATE` only) |
+`chunk_tracking`, as an IAM database user (`<sa>@<project>.iam`). The grants
+for each account are in idf_deploy
+`environment/deployments/ppdb/services/SQL/iam-sa-permissions.sql`, written
+for dev. Change the project ID for other environments.
 
 Dropping and recreating the `chunk_tracking` schema removes all of these
 grants. Apply them again after every `create-bq`. Otherwise the functions fail
 with `permission denied for schema chunk_tracking`.
-
-The grants for each account follow this pattern, shown for prod:
-
-```sql
-GRANT USAGE ON SCHEMA chunk_tracking TO "usdf-replication@ppdb-prod-84a4.iam";
-GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA chunk_tracking
-  TO "usdf-replication@ppdb-prod-84a4.iam";
-ALTER DEFAULT PRIVILEGES IN SCHEMA chunk_tracking
-  GRANT SELECT, INSERT ON TABLES TO "usdf-replication@ppdb-prod-84a4.iam";
-```
-
-The dev version of these grants is in idf_deploy
-`environment/deployments/ppdb/services/SQL/iam-sa-permissions.sql`.
