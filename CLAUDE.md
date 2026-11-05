@@ -47,6 +47,8 @@ cross-repo work.
   in place; it isn't a work log. Read all three at session start when working
   a ticket. Scripts and other artifacts don't go here; reusable code goes in
   the relevant component repo.
+- `notes/backlog.md`: follow-up work that isn't part of a current ticket. An
+  item becomes a Jira ticket when it's picked up, and is removed from here.
 
 Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
 ticket state → `notes/tickets/`, durable system facts → `docs/`, and only
