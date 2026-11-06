@@ -20,8 +20,8 @@ Component-specific guidance (build/test, layout, deploy behavior) is in
 ## Data flow (short)
 
 APDB → `ppdb-replication run` (Parquet export, status `exported`) →
-`upload-chunks` (GCS, `uploaded`) → `stage_chunk` Dataflow (BigQuery staging,
-`staged`) → `promote_chunks` (`ppdb_internal` + `ppdb_public`, `promoted`) → `ppdbtap` (TAP).
+`upload-chunks` (GCS, `uploaded`) → `stage_chunk` (BigQuery load jobs into
+staging, `staged`) → `promote_chunks` (`ppdb_internal` + `ppdb_public`, `promoted`) → `ppdbtap` (TAP).
 Stages are wired by Pub/Sub; all GCP resources are in `idf_deploy`. Most
 changes span more than one repo. Read `docs/architecture.md` before
 cross-repo work.
@@ -47,6 +47,8 @@ cross-repo work.
   in place; it isn't a work log. Read all three at session start when working
   a ticket. Scripts and other artifacts don't go here; reusable code goes in
   the relevant component repo.
+- `notes/backlog.md`: follow-up work that isn't part of a current ticket. An
+  item becomes a Jira ticket when it's picked up, and is removed from here.
 
 Put new knowledge at the narrowest level: component gotchas → `.claude/rules/`,
 ticket state → `notes/tickets/`, durable system facts → `docs/`, and only
@@ -91,8 +93,7 @@ its helpers now live in `lsst.dax.ppdb.gcp`.
     `git diff --stat --ignore-submodules=none origin/main...HEAD` lists no
     `repos/` paths. Workspace PRs never include submodule pointers.
 - Never run Terraform apply, GCP deploys or deletes, or `kubectl apply/delete`.
-  `.claude/settings.json` denies them. Opening or updating a PR in
-  `ppdb-cloud-functions` deploys to dev, so say so when asking to push there.
+  `.claude/settings.json` denies them.
 
 ## Environments
 

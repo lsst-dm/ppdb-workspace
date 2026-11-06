@@ -20,6 +20,14 @@ Apps are enabled in `environments/values-<env>.yaml`.
 Chart `applications/ppdb-replication/`. Image `ghcr.io/lsst/ppdb-replication`,
 tag `main`, `pullPolicy: Always`, so a restart picks up the latest dax_ppdb `main`.
 
+The image tag is set by `image.tag` in `applications/ppdb-replication/values.yaml`
+and can be overridden per environment in `values-usdfdev.yaml`,
+`values-usdfint.yaml` and `values-usdfprod.yaml`. dax_ppdb's `docker.yaml` also
+builds an image for each pull request, tagged with the branch name with `/`
+replaced by `-`, so the image for a ticket branch `tickets/DM-NNNNN` is
+`tickets-DM-NNNNN`. Setting that tag lets an environment run a ticket branch
+before it is merged.
+
 Two deployments from the same image:
 
 | Template | Command | Key flags (values) |

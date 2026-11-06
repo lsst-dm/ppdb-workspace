@@ -10,7 +10,7 @@ and usually a `Dockerfile`:
 
 | Dir | Kind | Purpose |
 |---|---|---|
-| `stage_chunk/` | Cloud Run function + Dataflow flex template (`stage_chunk_beam_job.py`) | Load an uploaded chunk's Parquet from GCS into BigQuery staging tables |
+| `stage_chunk/` | Cloud Run function | Stage an uploaded chunk's Parquet into the BigQuery staging tables (`ChunkStager` from dax_ppdb) |
 | `track_chunk/` | Cloud Run function | Update a chunk's `status` in the PPDB chunk table |
 | `promote_chunks/` | Cloud Run **job** | Promote contiguous staged chunks into `ppdb_internal`/`ppdb_public` (`ChunkPromoter` from dax_ppdb) |
 | `load_sso/` | Cloud Run function + Dataflow flex template | Load SSO data into BigQuery |
@@ -20,10 +20,8 @@ Makefile and shell scripts that no longer exist. Trust the workflows.
 
 ## Deployment
 
-- Deploys are GitHub Actions in `.github/workflows/<name>-deploy-{dev,int}.yaml`.
-- **Dev deploys on pull requests and on push to `main`** when files under
-  that function's directory change. Opening a PR here changes the dev GCP project.
-- Int deploys are `workflow_dispatch` only.
+- Deploys are manual GitHub Actions workflows; see "Deployment" in
+  `docs/components/ppdb-cloud-functions.md`.
 - Runtime config comes from env vars (`os.environ[...]` at the top of each
   `main.py`), set by the workflow from GitHub environment variables. The GCP
   resources they refer to (topics, buckets, service accounts, datasets) are
@@ -41,7 +39,6 @@ New Python files start with the GPL header in
 ## Dependency on dax_ppdb
 
 Functions pin `lsst-dax-ppdb @ git+https://github.com/lsst/dax_ppdb@cloudrun-vX.Y.Z`.
-Keep the pins consistent across functions. The exception today is
-`stage_chunk/requirements-dataflow.txt`, which tracks `@main`.
+Keep the pins consistent across functions.
 
 Full reference: `docs/components/ppdb-cloud-functions.md`. Read it before non-trivial changes here.

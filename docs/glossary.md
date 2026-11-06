@@ -20,5 +20,5 @@
 | **`columnRefs`** | A Felis feature `ppdb.yaml` uses to reuse column definitions from another schema (`apdb.yaml`, `sso_base.yaml`) instead of redefining them. |
 | **TAP_SCHEMA** | The IVOA metadata tables a TAP service uses to describe its tables and columns. For ppdbtap, generated from `ppdb.yaml` by `sdm_schemas/tap-schema/build-all`. |
 | **`dp2_prompt`** | BigQuery dataset in int holding the Data Preview 2 prompt-products tables (schema `dp2_prompt.yaml`), served by ppdbtap alongside `ppdb`. |
-| **Flex template** | Dataflow template packaged as a container; used by `stage_chunk` and `load_sso`. |
+| **Flex template** | Dataflow template packaged as a container; used by `load_sso`. |
 | **`cloudrun-vX.Y.Z`** | dax_ppdb git tags that the cloud functions pin. |

@@ -7,7 +7,7 @@ The repo `README.md` is stale; this doc and the workflows are more accurate.
 
 | Dir | GCP resource (name) | Trigger | Entry point |
 |---|---|---|---|
-| `stage_chunk/` | Cloud Run function `trigger-stage-chunk` + Dataflow flex template | Eventarc on `stage-chunk-topic` | `trigger_stage_chunk(event)` |
+| `stage_chunk/` | Cloud Run function `stage-chunk` | Push subscription `stage-chunk` on `stage-chunk-topic` | `stage_chunk(event)` |
 | `track_chunk/` | Cloud Run function `track-chunk` | Eventarc on `track-chunk-topic` | `track_chunk(event)` |
 | `promote_chunks/` | Cloud Run **job** `promote-chunks` | Cloud Scheduler → Workflow (daily by default) | `main()` |
 | `load_sso/` | Cloud Run function `load-sso` + Dataflow flex template | Eventarc on `load-sso-topic` | `load_sso(event)` |
@@ -20,8 +20,7 @@ All use `lsst.dax.ppdb.gcp` for structured logging (`CloudEventLogger`,
 
 | Topic | Publisher | Payload (JSON) |
 |---|---|---|
-| `stage-chunk-topic` | dax_ppdb `ChunkUploader` | `{"dataset": "ppdb_staging", "chunk_id": "<id>", "folder": "gs://<bucket>/<prefix>/<id>"}` |
-| `track-chunk-topic` | `stage_chunk_beam_job.update_chunk_status` | `{"operation": "update", "apdb_replica_chunk": <id>, "values": {"status": "staged"}}` |
+| `stage-chunk-topic` | dax_ppdb `ChunkUploader` | `{"chunk_id": "<id>", "folder": "gs://<bucket>/<id>"}` |
 | `load-sso-topic` | dax_ppdb `SSOUploader` | `{"bucket": ..., "object_prefix": ..., "uploaded_tables": [...]}` |
 
 Changing a payload means changing both the publisher (often in dax_ppdb) and
@@ -29,18 +28,18 @@ the consumer here.
 
 ## stage_chunk
 
-- `main.py` validates the message and launches the flex template
-  `DATAFLOW_TEMPLATE_PATH` as job `stage-chunk-<chunk_id>-<UTC timestamp>`. It
-  passes `dataset_id`, `chunk_id`, `folder`, `topic_name`, runs as the
-  Dataflow service account, and uses `GOOGLE_CLOUD_SUBNETWORK`.
-- `stage_chunk_beam_job.py` reads `manifest.json` from the folder, reads each
-  Parquet with `ReadFromParquet`, and appends to the staging tables
-  (`WRITE_APPEND`). It then publishes `staged` to `track-chunk-topic`.
-- Env: `PROJECT_ID`, `DATAFLOW_TEMPLATE_PATH`, `REGION`,
-  `SERVICE_ACCOUNT_EMAIL`, `TEMP_LOCATION`, `TOPIC_NAME`, `NUM_RETRIES`,
-  optional `GOOGLE_CLOUD_SUBNETWORK`.
-- Two dependency files: `requirements.txt` (function) and
-  `requirements-dataflow.txt` (Beam container, `Dockerfile`, `metadata.json`).
+- `main.py` checks the message (`chunk_id`, `folder`) and calls dax_ppdb
+  `ChunkStager.stage_chunk`. The stager loads each Parquet file into a
+  per-chunk table in `ppdb_landing` with BigQuery load jobs, then copies them
+  into staging in one transaction that checks the row counts against the
+  manifest. It sets the chunk to `staging`, then `staged`, `retrying` or
+  `failed`.
+- Error policy: bad messages, rejected chunks and permanent failures are
+  logged and acked. Temporary errors are raised, so Pub/Sub retries (100
+  attempts, then `stage-chunk-dlt`).
+- Env (from Terraform): `PPDB_CONFIG_URI`, `CLOUDSQL_*`,
+  `BIGQUERY_CHECK_TIMEOUT_SECONDS`, `BIGQUERY_JOB_TIMEOUT_SECONDS`,
+  `BIGQUERY_RETRY_TIMEOUT_SECONDS`, `LOG_LEVEL`.
 
 ## track_chunk
 
@@ -72,16 +71,17 @@ the consumer here.
 
 | Workflow | Deploys | Triggers |
 |---|---|---|
-| `stage-chunk-deploy-{dev,int}` | function `trigger-stage-chunk` | dev: PR + push to `main` on path changes; int: manual |
-| `dataflow-build-flex-deploy-{dev,int}` | stage_chunk Beam image + flex template | same pattern |
-| `track-chunk-deploy-{dev,int}` | function `track-chunk` | same pattern |
-| `promote-chunks-deploy-{dev,int}` | image → Artifact Registry `ppdb-repo/promote-chunks:<sha>` → Cloud Run job | same pattern |
-| `load-sso-deploy-{dev,int}`, `load-sso-build-flex-deploy-{dev,int}` | load_sso function and template | same pattern |
+| `stage-chunk-deploy-{dev,int,prod}` | function `stage-chunk` | manual (`workflow_dispatch`), or from `deploy-all-<env>` |
+| `track-chunk-deploy-{dev,int,prod}` | function `track-chunk` | same |
+| `promote-chunks-deploy-{dev,int,prod}` | image → Artifact Registry `ppdb-repo/promote-chunks:<sha>` → Cloud Run job | same |
+| `load-sso-deploy-{dev,int,prod}`, `load-sso-build-flex-deploy-{dev,int,prod}` | load_sso function and template | same |
+| `deploy-all-{dev,int,prod}` | every function and job in that environment | manual (`workflow_dispatch`) |
 
 Consequences:
 
-- **A PR touching a function's files deploys it to dev before review.**
-- Int is deployed by hand (`workflow_dispatch`).
+- **Nothing deploys automatically.** Pull requests and pushes to `main`
+  deploy nothing; each environment, dev included, is deployed by running a
+  workflow by hand.
 - Terraform creates each function with placeholder code and
   `ignore_changes` on the source, so code comes only from these workflows.
   Env vars, service accounts, triggers and scaling come only from Terraform.
@@ -93,9 +93,8 @@ Consequences:
 
 Every `requirements*.txt` pins
 `lsst-dax-ppdb @ git+https://github.com/lsst/dax_ppdb@cloudrun-vX.Y.Z`
-(the latest `cloudrun-v*` tag in dax_ppdb), except
-`stage_chunk/requirements-dataflow.txt`, which uses `@main`. Released dax_ppdb changes reach the functions only through
-these `cloudrun-v*` tags.
+(the latest `cloudrun-v*` tag in dax_ppdb). Released dax_ppdb changes reach
+the functions only through these `cloudrun-v*` tags.
 
 Usual workflow for a change that needs unreleased dax_ppdb code:
 

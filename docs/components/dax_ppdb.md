@@ -21,8 +21,7 @@ Both implement `Ppdb` (`ppdb.py`): `get_replica_chunks()` and `store(...)`.
 | Field | Default | Notes |
 |---|---|---|
 | `project_id` | required | GCP project, e.g. `ppdb-dev-5c07`, `ppdb-int-6c62` |
-| `bucket_name` | required | Upload bucket, `ppdb-<env>-ingest` |
-| `object_prefix` | required | GCS prefix; chunk N goes to `<object_prefix>/<N>/` (`chunks` in dev/int) |
+| `bucket_name` | required | Upload bucket, `ppdb-<env>-chunk-ingest` |
 | `replication_dir` | required | Local export dir at USDF; chunk N in `<replication_dir>/<N>/` |
 | `sql` | required | `PpdbSqlBaseConfig` (`db_url`, `schema_name`, …) for the chunk-tracking DB |
 | `stage_chunk_topic` | `stage-chunk-topic` | Pub/Sub topic published after upload |
@@ -78,7 +77,7 @@ newer chunk exists and `--min-wait-time` has passed, or after
 `ChunkUploader.run()` polls for `status == exported` every `--wait-interval`;
 `--upload-interval` throttles between chunks. Per chunk:
 
-1. Uploads the Parquet files listed in the manifest to `gs://<bucket>/<object_prefix>/<id>/`.
+1. Uploads the Parquet files listed in the manifest to `gs://<bucket>/<id>/`.
 2. Uploads `manifest.json`.
 3. Sets status `uploaded` and `gcs_uri`.
 4. Publishes `{"dataset": <staging>, "chunk_id": "<id>", "folder": "gs://..."}` to `stage_chunk_topic`.
