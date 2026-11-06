@@ -18,12 +18,9 @@ local Parquet + chunk row ──status: exported──► PPDB chunk table (Clou
 GCS bucket ─────────────────────status: uploaded
   │  publish → stage-chunk-topic
   ▼
-                                                 stage_chunk (Cloud Run) → Dataflow flex job
-                                                   │ loads Parquet → BigQuery staging tables
-                                                   │ publish → track-chunk-topic
-                                                   ▼
-                                                 track_chunk (Cloud Run, Eventarc) ─status: staged
-                                                   ▼
+                                                 stage_chunk (Cloud Run, ChunkStager)
+                                                   │ load jobs → ppdb_landing → staging tables
+                                                   ▼                         ─status: staged
                                                  Cloud Scheduler → Workflow → promote_chunks
                                                    (Cloud Run job, ChunkPromoter)
                                                    │ staging → promotion (scratch) → internal
@@ -52,7 +49,7 @@ generated from the Felis schema (`lsst.sdm.schemas/ppdb.yaml`) by
 `ppdb-cli create-datasets` (`bigquery/schema/dataset_builder.py`).
 
 ```
-             Dataflow (stage_chunk)                   promote_chunks (ChunkPromoter)
+       stage_chunk (load jobs, ppdb_landing)          promote_chunks (ChunkPromoter)
 Parquet ───────────────────────────► ppdb_staging ─────┐
                                                        ▼
                        ppdb_internal ──CLONE──► ppdb_promotion ──(+ staged rows, validity end,
@@ -70,7 +67,10 @@ SSO Parquet ──load_sso (temp staging table, then WRITE_TRUNCATE)──► pp
   extra `apdb_replica_chunk` column (DiaObject also has `validityEndMjdTai`).
   Also `updates`: raw APDB update records as `apdb_replica_chunk`,
   `update_time_ns`, `update_order`, `json_payload`.
-- **Written by:** the `stage_chunk` Dataflow job (`WRITE_APPEND`), one chunk at a time.
+- **Written by:** the `stage_chunk` function (`ChunkStager`), one chunk at a time.
+  BigQuery load jobs fill per-chunk tables in `ppdb_landing`, then one
+  transaction inserts them into staging and checks the row counts against the
+  manifest.
 - **Read by:** promotion, which also deletes each chunk's rows after promoting it.
   At steady state staging holds only chunks that are staged but not yet promoted.
 - `load_sso` also creates temporary per-table staging tables here that
@@ -141,7 +141,7 @@ SSO Parquet ──load_sso (temp staging table, then WRITE_TRUNCATE)──► pp
 | Principal | Access |
 |---|---|
 | TAP SA (`bigquery-kafka@science-platform-<env>-*`) | dataViewer on `ppdb_public`, `ppdb_internal`, extra datasets; project jobUser + readSessionUser |
-| `stage_chunk` Dataflow SA | BigQuery dataEditor + jobUser (project) |
+| `cloudrun-stage-chunk` SA | jobUser (project), dataEditor on `ppdb_landing` and `ppdb_staging` |
 | `cloudrun-promote-chunks` SA | dataEditor + jobUser (project), explicit access on `ppdb_staging` |
 | `load_sso` Dataflow SA | dataEditor + jobUser (project) |
 
@@ -154,7 +154,7 @@ promotion writes bad data into internal.
 | Concern | Code | Deployment/config |
 |---|---|---|
 | Replication, export, upload | `dax_ppdb` (`replicator.py`, `bigquery/chunk_uploader.py`) | `phalanx/applications/ppdb-replication` |
-| Staging load | `ppdb-cloud-functions/stage_chunk` | CI workflow + `idf_deploy/.../services/{trigger-stage-chunk,dataflow-stage-chunk}.tf` |
+| Staging load | `dax_ppdb/bigquery/chunk_stager.py`, `ppdb-cloud-functions/stage_chunk` | CI workflow + `idf_deploy/.../services/stage-chunk.tf` |
 | Status tracking | `ppdb-cloud-functions/track_chunk` | CI workflow + `.../services/track-chunk.tf` |
 | Promotion | `dax_ppdb/bigquery/chunk_promoter.py`, `ppdb-cloud-functions/promote_chunks` | CI workflow + `.../services/promote-chunks.tf` (scheduler) |
 | SSO load | `dax_ppdb/bigquery/sso_uploader.py`, `ppdb-cloud-functions/load_sso` | `.../services/{load-sso,sso-uploader,dataflow-load-sso}.tf` |

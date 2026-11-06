@@ -30,11 +30,10 @@ DB access for `gcp-ppdb-administrators@lsst.cloud`.
 
 | File | What |
 |---|---|
-| `gcs.tf` | Buckets `ppdb-<env>-config` (PPDB YAML configs), `-dataflow` (templates, temp), `-export`, `-ingest` (chunk uploads), `-sso-ingest` |
+| `gcs.tf` | Buckets `ppdb-<env>-config` (PPDB YAML configs), `-dataflow` (templates, temp), `-export`, `-chunk-ingest` (chunk uploads), `-sso-ingest` |
 | `pubsub.tf` | Topics `stage-chunk-topic`, `track-chunk-topic`, `load-sso-topic`, and dead-letter topics `stage-chunk-dlt`, `track-chunk-dlt` |
-| `bigquery.tf` | Datasets `ppdb_staging`, `ppdb_internal`, `ppdb_public`, `ppdb_backup` (location US). TAP SA (`bigquery-kafka`): jobUser + readSessionUser on the project, dataViewer on public, internal, and any extra datasets |
-| `trigger-stage-chunk.tf` | Function `trigger-stage-chunk`, SA `cloudrun-trigger-stage-chunk` (Cloud SQL IAM user, to read and update chunk status), Eventarc trigger on `stage-chunk-topic`, permission to launch Dataflow as the stage-chunk Dataflow SA |
-| `dataflow-stage-chunk.tf` | Dataflow worker SA: read ingest bucket, BigQuery data editor/job user, publish to `track-chunk-topic` |
+| `bigquery.tf` | Datasets `ppdb_landing` (per-chunk load tables, 1-day expiration), `ppdb_staging`, `ppdb_internal`, `ppdb_public`, `ppdb_backup` (location US). TAP SA (`bigquery-kafka`): jobUser + readSessionUser on the project, dataViewer on public, internal, and any extra datasets |
+| `stage-chunk.tf` | Function `stage-chunk`, SA `cloudrun-stage-chunk` (Cloud SQL IAM user, BigQuery jobUser, dataEditor on landing and staging, objectViewer on `-chunk-ingest`), push subscription `stage-chunk` on `stage-chunk-topic` with dead-letter topic `stage-chunk-dlt` |
 | `track-chunk.tf` | Function `track-chunk`, SA `cloudrun-track-chunks` (Cloud SQL IAM user), Eventarc trigger on `track-chunk-topic`, VPC egress, env vars |
 | `promote-chunks.tf` | Cloud Run job `promote-chunks`, SA `cloudrun-promote-chunks` (BQ editor, staging dataset access, Cloud SQL IAM user), Workflow `trigger-promote-chunks-cloudrun-job-workflow`, Cloud Scheduler `schedule-promote-chunks-workflow-job` |
 | `load-sso.tf`, `dataflow-load-sso.tf`, `sso-uploader.tf` | SSO path: function, Dataflow SA, uploader SA (write `-sso-ingest`, publish `load-sso-topic`) |

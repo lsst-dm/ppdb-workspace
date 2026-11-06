@@ -20,8 +20,8 @@ Component-specific guidance (build/test, layout, deploy behavior) is in
 ## Data flow (short)
 
 APDB → `ppdb-replication run` (Parquet export, status `exported`) →
-`upload-chunks` (GCS, `uploaded`) → `stage_chunk` Dataflow (BigQuery staging,
-`staged`) → `promote_chunks` (`ppdb_internal` + `ppdb_public`, `promoted`) → `ppdbtap` (TAP).
+`upload-chunks` (GCS, `uploaded`) → `stage_chunk` (BigQuery load jobs into
+staging, `staged`) → `promote_chunks` (`ppdb_internal` + `ppdb_public`, `promoted`) → `ppdbtap` (TAP).
 Stages are wired by Pub/Sub; all GCP resources are in `idf_deploy`. Most
 changes span more than one repo. Read `docs/architecture.md` before
 cross-repo work.
